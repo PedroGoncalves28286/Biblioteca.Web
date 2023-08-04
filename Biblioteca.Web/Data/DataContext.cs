@@ -1,0 +1,29 @@
+﻿using Biblioteca.Web.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace Biblioteca.Web.Data
+{
+    public class DataContext : DbContext
+    {
+
+        public DbSet<Rental> Rentals { get; set; }
+
+        public DbSet<Author> Authors { get; set; }
+
+        public DbSet<Genre> Genres { get; set; }
+
+        public DbSet<Membership> Memberships { get; set; }
+
+        public DbSet<Reservation> Reservations { get; set; }
+
+        public DbSet<Newsletter> Newsletters{ get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+     
+        public DataContext(DbContextOptions<DataContext>options ):base(options)
+        {
+            
+        }
+    }
+}
