@@ -12,17 +12,17 @@ namespace Biblioteca.Web.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IMemberRepository _memberRepository;
 
-        public MembersController(DataContext context)
+        public MembersController(IMemberRepository memberRepository)
         {
-            _context = context;
+            _memberRepository = memberRepository;
         }
 
         // GET: Members
-        public async Task<IActionResult> Index()
+        public  IActionResult Index()
         {
-            return View(await _context.Members.ToListAsync());
+            return View(_memberRepository.GetAll());
         }
 
         // GET: Members/Details/5
@@ -33,8 +33,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var member = await _memberRepository.GetByIdAsync(id.Value);
             if (member == null)
             {
                 return NotFound();
@@ -58,8 +57,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(member);
-                await _context.SaveChangesAsync();
+                await _memberRepository.CreateAsync(member);
                 return RedirectToAction(nameof(Index));
             }
             return View(member);
@@ -73,7 +71,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members.FindAsync(id);
+            var member = await _memberRepository.GetByIdAsync(id.Value);
             if (member == null)
             {
                 return NotFound();
@@ -97,8 +95,7 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(member);
-                    await _context.SaveChangesAsync();
+                    await _memberRepository.UpdateAsync(member);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,8 +121,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Members
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var member = await _memberRepository.GetByIdAsync(id.Value);
+                
             if (member == null)
             {
                 return NotFound();
@@ -139,15 +136,11 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var member = await _context.Members.FindAsync(id);
-            _context.Members.Remove(member);
-            await _context.SaveChangesAsync();
+            var member = await _memberRepository.GetByIdAsync(id);  
+            await _memberRepository.DeleteAsync(member);    
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MemberExists(int id)
-        {
-            return _context.Members.Any(e => e.Id == id);
-        }
+       
     }
 }

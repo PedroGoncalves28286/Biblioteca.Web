@@ -12,17 +12,18 @@ namespace Biblioteca.Web.Controllers
 {
     public class MembershipsController : Controller
     {
-        private readonly DataContext _context;
 
-        public MembershipsController(DataContext context)
+        private readonly IMembershipRepository _membershipRepository;
+
+        public MembershipsController(IMembershipRepository membershipRepository)
         {
-            _context = context;
+            _membershipRepository = membershipRepository;
         }
 
         // GET: Memberships
-        public async Task<IActionResult> Index()
+        public  IActionResult Index()
         {
-            return View(await _context.Memberships.ToListAsync());
+            return View (_membershipRepository.GetAll ());
         }
 
         // GET: Memberships/Details/5
@@ -33,8 +34,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var membership = _membershipRepository.GetByIdAsync(id.Value);
+                
             if (membership == null)
             {
                 return NotFound();
@@ -58,8 +59,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(membership);
-                await _context.SaveChangesAsync();
+                await _membershipRepository.CreateAsync(membership);    
                 return RedirectToAction(nameof(Index));
             }
             return View(membership);
@@ -73,7 +73,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships.FindAsync(id);
+            var membership = await _membershipRepository.GetByIdAsync(id.Value);
             if (membership == null)
             {
                 return NotFound();
@@ -97,12 +97,11 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(membership);
-                    await _context.SaveChangesAsync();
+                    await _membershipRepository.UpdateAsync(membership);    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MembershipExists(membership.Id))
+                    if (! await _membershipRepository.ExistAsync (membership.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +123,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var membership = await _context.Memberships
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var membership = await _membershipRepository.GetByIdAsync (id.Value);
+
             if (membership == null)
             {
                 return NotFound();
@@ -139,15 +138,12 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var membership = await _context.Memberships.FindAsync(id);
-            _context.Memberships.Remove(membership);
-            await _context.SaveChangesAsync();
+
+            var membership = await _membershipRepository.GetByIdAsync(id);
+            await _membershipRepository.DeleteAsync(membership);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MembershipExists(int id)
-        {
-            return _context.Memberships.Any(e => e.Id == id);
-        }
+        
     }
 }
