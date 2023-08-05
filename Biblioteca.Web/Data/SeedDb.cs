@@ -76,7 +76,9 @@ namespace Biblioteca.Web.Data
             {
                 // Add a default rental when the "Rentals" collection is empty.
                 AddRental("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4);
-
+                AddRental("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4);
+                AddRental("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4);
+                AddRental("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4);
                 await _context.SaveChangesAsync();
             }
 
