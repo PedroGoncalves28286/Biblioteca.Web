@@ -12,17 +12,17 @@ namespace Biblioteca.Web.Controllers
 {
     public class NewslettersController : Controller
     {
-        private readonly DataContext _context;
+        private readonly INewsletterRepository _newsletterRepository;
 
-        public NewslettersController(DataContext context)
+        public NewslettersController(INewsletterRepository newsletterRepository)
         {
-            _context = context;
+            _newsletterRepository = newsletterRepository;
         }
 
         // GET: Newsletters
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Newsletters.ToListAsync());
+            return View(_newsletterRepository.GetAll());
         }
 
         // GET: Newsletters/Details/5
@@ -33,8 +33,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var newsletter = await _context.Newsletters
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var newsletter = await _newsletterRepository.GetByIdAsync(id.Value);
             if (newsletter == null)
             {
                 return NotFound();
@@ -58,8 +57,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(newsletter);
-                await _context.SaveChangesAsync();
+                await _newsletterRepository.CreateAsync(newsletter);
                 return RedirectToAction(nameof(Index));
             }
             return View(newsletter);
@@ -73,7 +71,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var newsletter = await _context.Newsletters.FindAsync(id);
+            var newsletter = await _newsletterRepository.GetByIdAsync(id.Value);
             if (newsletter == null)
             {
                 return NotFound();
@@ -97,12 +95,11 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(newsletter);
-                    await _context.SaveChangesAsync();
+                    await _newsletterRepository.UpdateAsync(newsletter);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NewsletterExists(newsletter.Id))
+                    if (!await _newsletterRepository.ExistAsync(newsletter.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +121,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var newsletter = await _context.Newsletters
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var newsletter = await _newsletterRepository.GetByIdAsync(id.Value);
             if (newsletter == null)
             {
                 return NotFound();
@@ -139,15 +135,10 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var newsletter = await _context.Newsletters.FindAsync(id);
-            _context.Newsletters.Remove(newsletter);
-            await _context.SaveChangesAsync();
+            var newsletter = await _newsletterRepository.GetByIdAsync(id);
+            await _newsletterRepository.DeleteAsync(newsletter);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NewsletterExists(int id)
-        {
-            return _context.Newsletters.Any(e => e.Id == id);
-        }
     }
 }

@@ -12,17 +12,17 @@ namespace Biblioteca.Web.Controllers
 {
     public class RentalsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IRentalRepository _rentalRepository;
 
-        public RentalsController(DataContext context)
+        public RentalsController(IRentalRepository rentalRepository)
         {
-            _context = context;
+            _rentalRepository = rentalRepository;
         }
 
         // GET: Rentals
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Rentals.ToListAsync());
+            return View(_rentalRepository.GetAll());
         }
 
         // GET: Rentals/Details/5
@@ -33,8 +33,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rentals
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
                 return NotFound();
@@ -58,8 +57,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(rental);
-                await _context.SaveChangesAsync();
+                await _rentalRepository.CreateAsync(rental);
                 return RedirectToAction(nameof(Index));
             }
             return View(rental);
@@ -73,7 +71,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rentals.FindAsync(id);
+            var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
                 return NotFound();
@@ -97,12 +95,11 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(rental);
-                    await _context.SaveChangesAsync();
+                    await _rentalRepository.UpdateAsync(rental);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RentalExists(rental.Id))
+                    if (!await _rentalRepository.ExistAsync(rental.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +121,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var rental = await _context.Rentals
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
                 return NotFound();
@@ -139,15 +135,10 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rental = await _context.Rentals.FindAsync(id);
-            _context.Rentals.Remove(rental);
-            await _context.SaveChangesAsync();
+            var rental = await _rentalRepository.GetByIdAsync(id);
+            await _rentalRepository.DeleteAsync(rental);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RentalExists(int id)
-        {
-            return _context.Rentals.Any(e => e.Id == id);
-        }
     }
 }
