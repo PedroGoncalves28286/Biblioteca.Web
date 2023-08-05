@@ -12,17 +12,17 @@ namespace Biblioteca.Web.Controllers
 {
     public class ReservationsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IReservationRepository _reservationRepository;
 
-        public ReservationsController(DataContext context)
+        public ReservationsController(IReservationRepository reservationRepository)
         {
-            _context = context;
+            _reservationRepository = reservationRepository;
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Reservations.ToListAsync());
+            return View(_reservationRepository.GetAll());
         }
 
         // GET: Reservations/Details/5
@@ -33,8 +33,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var reservation = await _reservationRepository.GetByIdAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -58,8 +57,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reservation);
-                await _context.SaveChangesAsync();
+                await _reservationRepository.CreateAsync(reservation);
                 return RedirectToAction(nameof(Index));
             }
             return View(reservation);
@@ -73,7 +71,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = await _reservationRepository.GetByIdAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -97,12 +95,12 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
+                    await _reservationRepository.UpdateAsync(reservation);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch  (DbUpdateConcurrencyException)
                 {
-                    if (!ReservationExists(reservation.Id))
+
+                    if (! await _reservationRepository.ExistAsync(reservation.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +122,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservations
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var reservation = await _reservationRepository.GetByIdAsync(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -139,15 +136,11 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
+            var reservation = await _reservationRepository.GetByIdAsync(id);
+            await _reservationRepository.DeleteAsync(reservation);  
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservations.Any(e => e.Id == id);
-        }
+       
     }
 }
