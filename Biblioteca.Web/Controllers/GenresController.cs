@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Biblioteca.Web.Data;
+﻿using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
 {
     public class GenresController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IGenreRepository _genreRepository;
 
-        public GenresController(DataContext context)
+        public GenresController(IGenreRepository genreRepository)
         {
-            _context = context;
+            _genreRepository = genreRepository;
         }
 
         // GET: Genres
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Genres.ToListAsync());
+            return View(_genreRepository.GetAll());
         }
 
         // GET: Genres/Details/5
@@ -33,8 +29,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var genre = await _genreRepository.GetByIdAsync(id.Value);
+
             if (genre == null)
             {
                 return NotFound();
@@ -58,8 +54,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(genre);
-                await _context.SaveChangesAsync();
+                await _genreRepository.CreateAsync(genre);
                 return RedirectToAction(nameof(Index));
             }
             return View(genre);
@@ -73,7 +68,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genres.FindAsync(id);
+            var genre = await _genreRepository.GetByIdAsync(id.Value);
             if (genre == null)
             {
                 return NotFound();
@@ -97,12 +92,11 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(genre);
-                    await _context.SaveChangesAsync();
+                    await _genreRepository.UpdateAsync(genre);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GenreExists(genre.Id))
+                    if (!await _genreRepository.ExistAsync(genre.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +118,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var genre = await _context.Genres
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var genre = await _genreRepository.GetByIdAsync(id.Value);
             if (genre == null)
             {
                 return NotFound();
@@ -139,15 +132,10 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var genre = await _context.Genres.FindAsync(id);
-            _context.Genres.Remove(genre);
-            await _context.SaveChangesAsync();
+            var genre = await _genreRepository.GetByIdAsync(id);
+            await _genreRepository.DeleteAsync(genre);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GenreExists(int id)
-        {
-            return _context.Genres.Any(e => e.Id == id);
-        }
     }
 }

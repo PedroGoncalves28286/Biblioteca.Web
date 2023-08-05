@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Biblioteca.Web.Data;
+﻿using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
 {
     public class AuthorsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IAuthorRepository _authorRepository;
 
-        public AuthorsController(DataContext context)
+        public AuthorsController(IAuthorRepository authorRepository)
         {
-            _context = context;
+            _authorRepository = authorRepository;
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Authors.ToListAsync());
+            return View(_authorRepository.GetAll());
         }
 
         // GET: Authors/Details/5
@@ -33,8 +29,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var author = await _authorRepository.GetByIdAsync(id.Value);
+
             if (author == null)
             {
                 return NotFound();
@@ -58,9 +54,9 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(author);
-                await _context.SaveChangesAsync();
+                await _authorRepository.CreateAsync(author);
                 return RedirectToAction(nameof(Index));
+
             }
             return View(author);
         }
@@ -73,7 +69,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors.FindAsync(id);
+            var author = await _authorRepository.GetByIdAsync(id.Value);
             if (author == null)
             {
                 return NotFound();
@@ -86,7 +82,7 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName")] Author author)
+        public async Task<IActionResult> Edit(int id, Author author)
         {
             if (id != author.Id)
             {
@@ -97,12 +93,11 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(author);
-                    await _context.SaveChangesAsync();
+                    await _authorRepository.UpdateAsync(author);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AuthorExists(author.Id))
+                    if (!await _authorRepository.ExistAsync(author.Id))
                     {
                         return NotFound();
                     }
@@ -124,8 +119,8 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var author = await _context.Authors
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var author = await _authorRepository.GetByIdAsync(id.Value);
+
             if (author == null)
             {
                 return NotFound();
@@ -139,15 +134,10 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            var author = await _authorRepository.GetByIdAsync(id);
+            await _authorRepository.DeleteAsync(author);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AuthorExists(int id)
-        {
-            return _context.Authors.Any(e => e.Id == id);
-        }
     }
 }

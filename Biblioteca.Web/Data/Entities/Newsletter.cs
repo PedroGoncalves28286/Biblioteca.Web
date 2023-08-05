@@ -3,7 +3,7 @@ using System;
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Newsletter
+    public class Newsletter : IEntity
     {
         public int Id { get; set; }
         public int NewsID { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Reservation
+    public class Reservation : IEntity
     {
         
         public int Id { get; set; } 

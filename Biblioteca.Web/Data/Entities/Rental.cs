@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Rental
+    public class Rental : IEntity
     {
         public int Id { get; set; }
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Membership
+    public class Membership : IEntity
     {
 
         public int Id { get; set; }

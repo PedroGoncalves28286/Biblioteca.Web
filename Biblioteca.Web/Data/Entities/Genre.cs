@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Genre
+    public class Genre : IEntity
     {
         public int Id { get; set; }
 
