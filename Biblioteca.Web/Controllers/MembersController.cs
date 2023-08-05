@@ -10,22 +10,22 @@ using Biblioteca.Web.Data.Entities;
 
 namespace Biblioteca.Web.Controllers
 {
-    public class UsersController : Controller
+    public class MembersController : Controller
     {
         private readonly DataContext _context;
 
-        public UsersController(DataContext context)
+        public MembersController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: Users
+        // GET: Members
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Users.ToListAsync());
+            return View(await _context.Members.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Members/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
+            var member = await _context.Members
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            if (member == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(member);
         }
 
-        // GET: Users/Create
+        // GET: Members/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Members/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Phone,BirthDate,Disable,MembershipID")] User user)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Phone,BirthDate,Disable,MembershipID")] Member member)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
+                _context.Add(member);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(member);
         }
 
-        // GET: Users/Edit/5
+        // GET: Members/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var member = await _context.Members.FindAsync(id);
+            if (member == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(member);
         }
 
-        // POST: Users/Edit/5
+        // POST: Members/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Phone,BirthDate,Disable,MembershipID")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Phone,BirthDate,Disable,MembershipID")] Member member)
         {
-            if (id != user.Id)
+            if (id != member.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(member);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!MemberExists(member.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace Biblioteca.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(member);
         }
 
-        // GET: Users/Delete/5
+        // GET: Members/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
+            var member = await _context.Members
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            if (member == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(member);
         }
 
-        // POST: Users/Delete/5
+        // POST: Members/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
+            var member = await _context.Members.FindAsync(id);
+            _context.Members.Remove(member);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool MemberExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.Members.Any(e => e.Id == id);
         }
     }
 }
