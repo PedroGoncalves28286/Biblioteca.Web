@@ -16,6 +16,12 @@ namespace Biblioteca.Web.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
+            migrationBuilder.AddColumn<string>(
+                name: "Borrower",
+                table: "Reservations",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.AlterColumn<string>(
                 name: "UserId",
                 table: "Rentals",
@@ -24,6 +30,12 @@ namespace Biblioteca.Web.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "UserId",
+                table: "Newsletters",
+                type: "nvarchar(450)",
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "UserId",
@@ -195,6 +207,11 @@ namespace Biblioteca.Web.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Newsletters_UserId",
+                table: "Newsletters",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Memberships_UserId",
                 table: "Memberships",
                 column: "UserId");
@@ -260,6 +277,14 @@ namespace Biblioteca.Web.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
+                name: "FK_Newsletters_AspNetUsers_UserId",
+                table: "Newsletters",
+                column: "UserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_Rentals_AspNetUsers_UserId",
                 table: "Rentals",
                 column: "UserId",
@@ -285,6 +310,10 @@ namespace Biblioteca.Web.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Memberships_AspNetUsers_UserId",
                 table: "Memberships");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Newsletters_AspNetUsers_UserId",
+                table: "Newsletters");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Rentals_AspNetUsers_UserId",
@@ -324,12 +353,24 @@ namespace Biblioteca.Web.Migrations
                 table: "Rentals");
 
             migrationBuilder.DropIndex(
+                name: "IX_Newsletters_UserId",
+                table: "Newsletters");
+
+            migrationBuilder.DropIndex(
                 name: "IX_Memberships_UserId",
                 table: "Memberships");
 
             migrationBuilder.DropIndex(
                 name: "IX_Members_UserId",
                 table: "Members");
+
+            migrationBuilder.DropColumn(
+                name: "Borrower",
+                table: "Reservations");
+
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "Newsletters");
 
             migrationBuilder.DropColumn(
                 name: "UserId",

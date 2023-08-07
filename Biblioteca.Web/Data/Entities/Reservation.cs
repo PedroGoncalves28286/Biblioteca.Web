@@ -9,7 +9,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Name { get; set; }
 
-        public string UserId { get; set; }  
+        public string Borrower { get; set; }  
 
         public int ReservationNumber { get; set; }  
 

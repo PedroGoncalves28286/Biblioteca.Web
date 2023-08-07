@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230807101347_AddUsers")]
+    [Migration("20230807185117_AddUsers")]
     partial class AddUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,7 +140,12 @@ namespace Biblioteca.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Newsletters");
                 });
@@ -201,6 +206,9 @@ namespace Biblioteca.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Borrower")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -430,6 +438,15 @@ namespace Biblioteca.Web.Migrations
                 });
 
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Membership", b =>
+                {
+                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Newsletter", b =>
                 {
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()

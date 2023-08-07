@@ -111,6 +111,14 @@ namespace Biblioteca.Web.Data
 
                 await _context.SaveChangesAsync();
             }
+
+            if (!_context.Reservations.Any())
+            {
+                AddReservation("1984", "1001", 3, user);
+                AddReservation("Dom Quixote", "1002", 4, user);
+
+                await _context.SaveChangesAsync();
+            }
             
         }
 
@@ -131,12 +139,12 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddReservation(string name,string userId,int reservationNumber,User user)
+        private void AddReservation(string name,string borrower,int reservationNumber,User user)
         {
             _context.Reservations.Add(new Reservation
             {
                 Name = name,
-                UserId = userId,
+                Borrower = borrower,
                 ReservationNumber = reservationNumber,
                 User = user
             });
