@@ -2,6 +2,7 @@
 using Biblioteca.Web.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
@@ -18,7 +19,7 @@ namespace Biblioteca.Web.Controllers
         // GET: Authors
         public IActionResult Index()
         {
-            return View(_authorRepository.GetAll());
+            return View(_authorRepository.GetAll().OrderBy(l => l.LastName));
         }
 
         // GET: Authors/Details/5

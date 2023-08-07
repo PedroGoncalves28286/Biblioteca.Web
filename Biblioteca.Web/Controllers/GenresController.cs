@@ -2,6 +2,7 @@
 using Biblioteca.Web.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
@@ -18,7 +19,7 @@ namespace Biblioteca.Web.Controllers
         // GET: Genres
         public IActionResult Index()
         {
-            return View(_genreRepository.GetAll());
+            return View(_genreRepository.GetAll().OrderBy(n => n.Name));
         }
 
         // GET: Genres/Details/5

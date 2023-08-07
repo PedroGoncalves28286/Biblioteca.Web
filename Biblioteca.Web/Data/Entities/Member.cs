@@ -11,5 +11,7 @@ namespace Biblioteca.Web.Data.Entities
         public DateTime BirthDate { get; set; }
         public bool Disable { get; set; }
         public int MembershipID { get; set; }
+
+        public User User { get; set; }
     }
 }

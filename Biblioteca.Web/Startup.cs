@@ -1,7 +1,10 @@
 using Biblioteca.Web.Data;
+using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +28,18 @@ namespace Biblioteca.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddIdentity<User, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequireDigit = false;
+                cfg.Password.RequiredUniqueChars = 0;
+                cfg.Password.RequireUppercase = false;
+                cfg.Password.RequireLowercase = false;
+                cfg.Password.RequireNonAlphanumeric = false;
+                cfg.Password.RequiredLength = 6;
+            })
+                .AddEntityFrameworkStores<DataContext>();
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
@@ -32,6 +47,15 @@ namespace Biblioteca.Web
 
             services.AddControllersWithViews();
             services.AddTransient<SeedDb>();
+            services.AddScoped<IUserHelper, UserHelper >();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IMembershipRepository, MembershipRepository>();
+            services.AddScoped<INewsletterRepository, NewsletterRepository>();
+            services.AddScoped<IRentalRepository, RentalRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+          
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

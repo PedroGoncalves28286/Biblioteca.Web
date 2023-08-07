@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 
 namespace Biblioteca.Web.Controllers
 {
     public class MembersController : Controller
     {
         private readonly IMemberRepository _memberRepository;
+        private readonly IUserHelper _userHelper;
 
-        public MembersController(IMemberRepository memberRepository)
+        public MembersController(IMemberRepository memberRepository ,IUserHelper userHelper)
         {
             _memberRepository = memberRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Members
         public  IActionResult Index()
         {
-            return View(_memberRepository.GetAll());
+            return View(_memberRepository.GetAll().OrderBy(l => l.LastName));
         }
 
         // GET: Members/Details/5
@@ -57,6 +60,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                member.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                 await _memberRepository.CreateAsync(member);
                 return RedirectToAction(nameof(Index));
             }
@@ -95,11 +99,12 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
+                    member.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                     await _memberRepository.UpdateAsync(member);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MemberExists(member.Id))
+                    if (!await _memberRepository.ExistAsync (member.Id))
                     {
                         return NotFound();
                     }

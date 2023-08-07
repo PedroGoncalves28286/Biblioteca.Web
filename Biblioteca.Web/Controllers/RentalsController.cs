@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 
 namespace Biblioteca.Web.Controllers
 {
     public class RentalsController : Controller
     {
         private readonly IRentalRepository _rentalRepository;
+        private readonly IUserHelper _userHelper;
 
-        public RentalsController(IRentalRepository rentalRepository)
+        public RentalsController(IRentalRepository rentalRepository, IUserHelper userHelper)
         {
             _rentalRepository = rentalRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Rentals
         public IActionResult Index()
         {
-            return View(_rentalRepository.GetAll());
+            return View(_rentalRepository.GetAll().OrderBy(u => u.UserId));
         }
 
         // GET: Rentals/Details/5
@@ -57,6 +60,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                 await _rentalRepository.CreateAsync(rental);
                 return RedirectToAction(nameof(Index));
             }
@@ -95,6 +99,7 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
+                    rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                     await _rentalRepository.UpdateAsync(rental);
                 }
                 catch (DbUpdateConcurrencyException)

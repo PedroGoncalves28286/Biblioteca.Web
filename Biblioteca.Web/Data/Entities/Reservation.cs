@@ -12,5 +12,7 @@ namespace Biblioteca.Web.Data.Entities
         public string UserId { get; set; }  
 
         public int ReservationNumber { get; set; }  
+
+        public User User { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace Biblioteca.Web.Controllers
         // GET: Newsletters
         public IActionResult Index()
         {
-            return View(_newsletterRepository.GetAll());
+            return View(_newsletterRepository.GetAll().OrderBy(n => n.NewsID));
         }
 
         // GET: Newsletters/Details/5

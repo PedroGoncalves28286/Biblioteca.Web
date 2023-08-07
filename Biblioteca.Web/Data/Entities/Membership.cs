@@ -22,5 +22,7 @@ namespace Biblioteca.Web.Data.Entities
         [DisplayName("12 month rate")]
         public byte ChargeRateTwelveMonth { get; set; }
 
+        public User User { get; set; }
+
     }
 }

@@ -35,9 +35,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public int RentalDuration { get; set; } 
 
-     
-
-
+        
         public enum StatusEnum
         {
             Requested,
@@ -47,6 +45,8 @@ namespace Biblioteca.Web.Data.Entities
             Closed
 
         }
+
+        public User User { get; set; }
 
 
     }

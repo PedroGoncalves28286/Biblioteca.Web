@@ -1,4 +1,6 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -12,62 +14,83 @@ namespace Biblioteca.Web.Data
 {
     public class SeedDb
     {
-
         private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context,IUserHelper  userHelper)
+
         {
             _context = context;
+            _userHelper = userHelper;
         }
 
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+            var user = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
 
+            if (user == null)
+            {
+                user = new User
+                {
+                    FirstName = "Pedro",
+                    LastName = "Goncalves",
+                    Email = "pedro@gmail.com",
+                    UserName = "pedro@gmail.com",
+                    PhoneNumber = "919945526"
+
+                };
+                var result = await _userHelper.AddUserAsync(user, "123456");
+                if (result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("could not create the user in seeder");
+                }
+            }
+      
             if (!_context.Authors.Any())
             {
-                AddAuthor("Marcele", "Proust");
-                AddAuthor("J.R.R", "Tolkien");
-                AddAuthor("Dante", "Alighieri");
-                AddAuthor("Nathaniel", "Hawthorne");
-                AddAuthor("Franz", "Kafka");
-                AddAuthor("Thomas", "Mann");
-                AddAuthor("George", "Orwell");
-                AddAuthor("Mark", "Twain");
-                AddAuthor("Gabriel", "Marquez");
-                AddAuthor("Miguel", "Cervantes");
+                AddAuthor("Marcele", "Proust", user);
+                AddAuthor("J.R.R", "Tolkien",user);
+                AddAuthor("Dante", "Alighieri",user);
+                AddAuthor("Nathaniel", "Hawthorne",user);
+                AddAuthor("Franz", "Kafka",user);
+                AddAuthor("Thomas", "Mann",user);
+                AddAuthor("George", "Orwell",user);
+                AddAuthor("Mark", "Twain",user);
+                AddAuthor("Gabriel", "Marquez",user);
+                AddAuthor("Miguel", "Cervantes",user);
 
                 await _context.SaveChangesAsync();
             }
             if (!_context.Genres.Any())
             {
-                AddGenre("Ficcion");
-                AddGenre("Romance");
-                AddGenre("History");
-                AddGenre("Fantasy");
-                AddGenre("Mistery");
-                AddGenre("NonFicion");
+                AddGenre("Ficcion",user);
+                AddGenre("Romance",user);
+                AddGenre("History",user);
+                AddGenre("Fantasy",user);
+                AddGenre("Mistery",user);
+                AddGenre("NonFicion",user);
 
                 await _context.SaveChangesAsync();
             }
             if (!_context.Memberships.Any())
             {
-                AddMembership("João Manuel", 5, 10, 12);
-                AddMembership("Rafael Santos", 5, 10, 12);
-                AddMembership("Jorge Tomé", 5, 10, 12);
-                AddMembership("Maria Albertina", 5, 10, 12);
-                AddMembership("Maria Joana", 5, 10, 12);
-                AddMembership("Branca de Neve", 5, 10, 12);
+                AddMembership("João Manuel", 5, 10, 12,user);
+                AddMembership("Rafael Santos", 5, 10, 12,user);
+                AddMembership("Jorge Tomé", 5, 10, 12,user);
+                AddMembership("Maria Albertina", 5, 10, 12,user);
+                AddMembership("Maria Joana", 5, 10, 12,user);
+                AddMembership("Branca de Neve", 5, 10, 12,user);
 
                 await _context.SaveChangesAsync();
             }
             if (!_context.Newsletters.Any())
             {
-                AddNewsletter(1, "A Divina Comedia", "An Italian narrative poem by Dante Alighieri", DateTime.Now);
-                AddNewsletter(1,"A metamorfose", "is a novella written by Franz Kafka which was first published in 1915", DateTime.Now);
-                AddNewsletter(1, "Cem anos de solidão", "apresenta uma das mais fascinantes aventuras literárias do século XX", DateTime.Now);
-                AddNewsletter(1, "Guerra e Paz", "is a literary work by Russian author Leo Tolstoy. Set during the Napoleonic Wars", DateTime.Now);
-                AddNewsletter(1, "Romeu e Julieta", "is a tragedy written by William Shakespeare early in his career about the romance between two Italian youths from feuding families", DateTime.Now);
+                AddNewsletter(1, "A Divina Comedia", "An Italian narrative poem by Dante Alighieri", DateTime.Now,user);
+                AddNewsletter(1,"A metamorfose", "is a novella written by Franz Kafka which was first published in 1915", DateTime.Now,user);
+                AddNewsletter(1, "Cem anos de solidão", "apresenta uma das mais fascinantes aventuras literárias do século XX", DateTime.Now,user);
+                AddNewsletter(1, "Guerra e Paz", "is a literary work by Russian author Leo Tolstoy. Set during the Napoleonic Wars", DateTime.Now,user);
+                AddNewsletter(1, "Romeu e Julieta", "is a tragedy written by William Shakespeare early in his career about the romance between two Italian youths from feuding families", DateTime.Now,user);
 
                 await _context.SaveChangesAsync();
             }
@@ -75,23 +98,23 @@ namespace Biblioteca.Web.Data
             if (!_context.Rentals.Any())
             {
                 // Add a default rental when the "Rentals" collection is empty.
-                AddRental("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4);
-                AddRental("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4);
-                AddRental("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4);
-                AddRental("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4);
+                AddRental("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddRental("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddRental("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddRental("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
                 await _context.SaveChangesAsync();
             }
 
             if (!_context.Members.Any())
             {
-                AddMember("Maria","Albertina","919942532",DateTime.Now,true,123456);
+                AddMember("Maria","Albertina","919942532",DateTime.Now,true,123456,user);
 
                 await _context.SaveChangesAsync();
             }
             
         }
 
-        private void AddMember(string firstName,string lastName,string phone,DateTime birthdate,bool disable,int membershipId)
+        private void AddMember(string firstName,string lastName,string phone,DateTime birthdate,bool disable,int membershipId,User user)
         {
             _context.Members.Add(new Member
             {
@@ -100,22 +123,26 @@ namespace Biblioteca.Web.Data
                 Phone = phone,
                 BirthDate = birthdate,
                 Disable = disable,
-                MembershipID = membershipId
+                MembershipID = membershipId,
+                User = user
+
+
                 
             });
         }
 
-        private void AddReservation(string name,string userId,int reservationNumber)
+        private void AddReservation(string name,string userId,int reservationNumber,User user)
         {
             _context.Reservations.Add(new Reservation
             {
                 Name = name,
                 UserId = userId,
-                ReservationNumber = reservationNumber
+                ReservationNumber = reservationNumber,
+                User = user
             });
         }
 
-        private void AddRental(string userId, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration)
+        private void AddRental(string userId, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
         {
             _context.Rentals.Add(new Rental
             {
@@ -128,24 +155,25 @@ namespace Biblioteca.Web.Data
                 Publisher = publisher,
                 ScheduleReturnDate = scheduleReturnDate,
                 ActualReturnDate = actualReturnDate,
-                RentalDuration = rentalDuration
+                RentalDuration = rentalDuration,
+                User = user
             });
         }
 
-
-        private void AddNewsletter(int newsId,string title,string content,DateTime date)
+        private void AddNewsletter(int newsId,string title,string content,DateTime date, User user)
         {
             _context.Newsletters.Add(new Newsletter
             {
                 NewsID = newsId,
                 Title = title,
                 Content = content,
-                AddDate = date
+                AddDate = date,
+                User = user
              
             });
         }
 
-        private void AddMembership(string name, byte signUpFee, byte chargeRateSixMonth, byte chargeRateTwelveMonth)
+        private void AddMembership(string name, byte signUpFee, byte chargeRateSixMonth, byte chargeRateTwelveMonth,User user)
         {
             _context.Memberships.Add(new Membership
             {
@@ -153,32 +181,32 @@ namespace Biblioteca.Web.Data
                 SignUpFee = signUpFee,
                 ChargeRateSixMonth = chargeRateSixMonth,
                 ChargeRateTwelveMonth = chargeRateTwelveMonth,
+                User = user
 
             });
 
         }
 
-        private void AddGenre(string name)
+        private void AddGenre(string name, User user)
         {
             _context.Genres.Add(new Genre
             {
                 Name = name
+                
             });
 
         }
 
-        private void AddAuthor(string firstName, string lastName )
+        private void AddAuthor(string firstName, string lastName, User user )
         {
             _context.Authors.Add(new Author
             {
                 FirstName = firstName,
                 LastName = lastName
+            
             });
         }
         
-
-        
-
 
     }
 }

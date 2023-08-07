@@ -7,22 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 
 namespace Biblioteca.Web.Controllers
 {
     public class ReservationsController : Controller
     {
         private readonly IReservationRepository _reservationRepository;
+        private readonly IUserHelper _userHelper;
 
-        public ReservationsController(IReservationRepository reservationRepository)
+        public ReservationsController(IReservationRepository reservationRepository, IUserHelper userHelper)
         {
             _reservationRepository = reservationRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Reservations
         public IActionResult Index()
         {
-            return View(_reservationRepository.GetAll());
+            return View(_reservationRepository.GetAll().OrderBy(n => n.Name));
         }
 
         // GET: Reservations/Details/5
@@ -57,6 +60,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                reservation.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                 await _reservationRepository.CreateAsync(reservation);
                 return RedirectToAction(nameof(Index));
             }
@@ -95,6 +99,8 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
+                    reservation.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+
                     await _reservationRepository.UpdateAsync(reservation);
                 }
                 catch  (DbUpdateConcurrencyException)

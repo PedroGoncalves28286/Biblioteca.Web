@@ -13,6 +13,7 @@ namespace Biblioteca.Web.Data.Entities
         public string Content { get; set; }
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
         public DateTime AddDate { get; set; }
+        public User User { get; internal set; }
     }
 }
 
