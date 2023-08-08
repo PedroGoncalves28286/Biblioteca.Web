@@ -12,6 +12,10 @@
 <table class="table">
     <thead>
         <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.AuthorImage)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
@@ -23,7 +27,13 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.AuthorImage))
+                    {
+                        <img src="@Url.Content(item.AuthorImage)" alt="Image" style=" width:100px; height:150px;max-width:100%"; height:auto>
+                    }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
             </td>

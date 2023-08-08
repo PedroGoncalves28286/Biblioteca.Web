@@ -150,11 +150,11 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddRental(string userId, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
+        private void AddRental(string borrower, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
         {
             _context.Rentals.Add(new Rental
             {
-                UserId = userId,
+                Borrower = borrower,
                 Author = author,
                 Title = title,
                 BookId = bookId,

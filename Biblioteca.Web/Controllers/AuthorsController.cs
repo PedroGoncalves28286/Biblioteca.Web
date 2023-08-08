@@ -1,7 +1,10 @@
 ﻿using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,15 +54,47 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName")] Author author)
+        public async Task<IActionResult> Create(AuthorViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var path =string.Empty;
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot\\Images\\authors",
+                        model.ImageFile.FileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/authors/{model.ImageFile.FileName}";
+                }
+
+                var author = this.ToAuthor(model, path);
+
                 await _authorRepository.CreateAsync(author);
                 return RedirectToAction(nameof(Index));
 
             }
-            return View(author);
+            return View(model);
+        }
+
+        private Author ToAuthor(AuthorViewModel model, string path)
+        {
+            return new Author
+            {
+                Id = model.Id,
+                AuthorImage = path,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+              
+            };
+            
         }
 
         // GET: Authors/Edit/5
@@ -75,7 +110,20 @@ namespace Biblioteca.Web.Controllers
             {
                 return NotFound();
             }
-            return View(author);
+            var model = this.ToAuthorViewModel(author);
+            return View(model);
+        }
+
+        private AuthorViewModel ToAuthorViewModel(Author author)
+        {
+            return new AuthorViewModel
+            {
+                Id = author.Id,
+                AuthorImage = author.AuthorImage,   
+                FirstName = author.FirstName,
+                LastName = author.LastName,
+            };
+
         }
 
         // POST: Authors/Edit/5
@@ -83,22 +131,36 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Author author)
+        public async Task<IActionResult> Edit(AuthorViewModel model)
         {
-            if (id != author.Id)
-            {
-                return NotFound();
-            }
+            
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = string.Empty;
+
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\Images\\authors",
+                            model.ImageFile.FileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/authors/{model.ImageFile.FileName}";
+                    }
+                    var author=this.ToAuthor(model,path);
                     await _authorRepository.UpdateAsync(author);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _authorRepository.ExistAsync(author.Id))
+                    if (!await _authorRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -109,7 +171,7 @@ namespace Biblioteca.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            return View(model);
         }
 
         // GET: Authors/Delete/5

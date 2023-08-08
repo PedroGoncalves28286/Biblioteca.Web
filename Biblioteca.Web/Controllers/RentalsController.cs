@@ -25,7 +25,7 @@ namespace Biblioteca.Web.Controllers
         // GET: Rentals
         public IActionResult Index()
         {
-            return View(_rentalRepository.GetAll().OrderBy(u => u.UserId));
+            return View(_rentalRepository.GetAll().OrderBy(u => u.Borrower));
         }
 
         // GET: Rentals/Details/5

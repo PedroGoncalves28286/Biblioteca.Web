@@ -32,6 +32,12 @@ namespace Biblioteca.Web.Migrations
                 oldNullable: true);
 
             migrationBuilder.AddColumn<string>(
+                name: "Borrower",
+                table: "Rentals",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
                 name: "UserId",
                 table: "Newsletters",
                 type: "nvarchar(450)",
@@ -367,6 +373,10 @@ namespace Biblioteca.Web.Migrations
             migrationBuilder.DropColumn(
                 name: "Borrower",
                 table: "Reservations");
+
+            migrationBuilder.DropColumn(
+                name: "Borrower",
+                table: "Rentals");
 
             migrationBuilder.DropColumn(
                 name: "UserId",
