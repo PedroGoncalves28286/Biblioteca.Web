@@ -1,5 +1,6 @@
 ﻿using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,16 @@ namespace Biblioteca.Web.Controllers
     public class AuthorsController : Controller
     {
         private readonly IAuthorRepository _authorRepository;
+        private readonly IImageHelper _imageHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public AuthorsController(IAuthorRepository authorRepository)
+        public AuthorsController(IAuthorRepository authorRepository,
+            IImageHelper imageHelper,
+            IConverterHelper converterHelper)
         {
             _authorRepository = authorRepository;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Authors
@@ -62,23 +69,12 @@ namespace Biblioteca.Web.Controllers
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
+                   
 
-                    path = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot\\Images\\authors",
-                        file);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);
-                    }
-
-                    path = $"~/images/authors/{file}";
+                    path = await _imageHelper.UploadImageAsyn(model.ImageFile,"authors");   
                 }
 
-                var author = this.ToAuthor(model, path);
+                var author = _converterHelper.ToAuthor(model, path, true);
 
                 await _authorRepository.CreateAsync(author);
                 return RedirectToAction(nameof(Index));
@@ -87,18 +83,7 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        private Author ToAuthor(AuthorViewModel model, string path)
-        {
-            return new Author
-            {
-                Id = model.Id,
-                AuthorImage = path,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-              
-            };
-            
-        }
+       
 
         // GET: Authors/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -113,21 +98,12 @@ namespace Biblioteca.Web.Controllers
             {
                 return NotFound();
             }
-            var model = this.ToAuthorViewModel(author);
+            var model = _converterHelper.ToAuthorViewModel(author);
+            model = _converterHelper.ToAuthorViewModel(author);
             return View(model);
         }
 
-        private AuthorViewModel ToAuthorViewModel(Author author)
-        {
-            return new AuthorViewModel
-            {
-                Id = author.Id,
-                AuthorImage = author.AuthorImage,   
-                FirstName = author.FirstName,
-                LastName = author.LastName,
-            };
-
-        }
+        
 
         // POST: Authors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -146,19 +122,11 @@ namespace Biblioteca.Web.Controllers
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\Images\\authors",
-                            model.ImageFile.FileName);
+                       
 
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/authors/{model.ImageFile.FileName}";
+                        path = await _imageHelper.UploadImageAsyn(model.ImageFile,"authors");
                     }
-                    var author=this.ToAuthor(model,path);
+                    var author= _converterHelper.ToAuthor(model,path, false);
                     await _authorRepository.UpdateAsync(author);
                 }
                 catch (DbUpdateConcurrencyException)

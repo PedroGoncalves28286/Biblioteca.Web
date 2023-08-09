@@ -17,11 +17,17 @@ namespace Biblioteca.Web.Controllers
     {
         private readonly IRentalRepository _rentalRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
 
-        public RentalsController(IRentalRepository rentalRepository, IUserHelper userHelper)
+        public RentalsController(IRentalRepository rentalRepository, IUserHelper userHelper ,
+            IConverterHelper converterHelper,
+            IImageHelper imageHelper)
         {
             _rentalRepository = rentalRepository;
             _userHelper = userHelper;
+            _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
         }
 
         // GET: Rentals
@@ -66,52 +72,23 @@ namespace Biblioteca.Web.Controllers
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    var guid = Guid.NewGuid().ToString();
-                    var file = $"{guid}.jpg";
+                    
 
-                    path = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot\\Images\\covers",
-                        file);
-
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await model.ImageFile.CopyToAsync(stream);
-                    }
-
-                    path = $"~/images/covers/{file}";
+                    path = await _imageHelper.UploadImageAsyn(model.ImageFile,"covers");
                 }
 
-                var rental = this.ToRental(model, path);
+                var rental = _converterHelper.ToRental(model, path, true);
 
                 rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+
                 await _rentalRepository.CreateAsync(rental);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
         }
 
-        private Rental ToRental(RentalViewModel model, string path)
-        {
-            return new Rental
-            {
-                Id = model.Id,
-                Borrower = model.Borrower,
-                Author = model.Author,
-                Title = model.Title,
-                BookId = model.BookId,
-                ImageUrl = path,
-                Availability = model.Availability,
-                ISBN = model.ISBN,
-                Publisher = model.Publisher,
-                StartDate = model.StartDate,
-                ScheduleReturnDate = model.ScheduleReturnDate,
-                ActualReturnDate = model.ActualReturnDate,
-                RentalDuration = model.RentalDuration,
-                User = model.User,
-            };
-        }
-
+        
         // GET: Rentals/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -126,32 +103,13 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var model = this.ToRentalViewModel(rental);
+            var model = _converterHelper.ToRentalViewModel(rental);
+            
 
             return View(model);
         }
 
-        private RentalViewModel ToRentalViewModel(Rental rental)
-        {
-            return new RentalViewModel
-            {
-                Id = rental.Id,
-                Borrower = rental.Borrower,
-                Author = rental.Author,
-                Title = rental.Title,
-                BookId = rental.BookId,
-                ImageUrl = rental.ImageUrl,
-                Availability = rental.Availability,
-                ISBN = rental.ISBN,
-                Publisher = rental.Publisher,
-                StartDate = rental.StartDate,
-                ScheduleReturnDate = rental.ScheduleReturnDate,
-                ActualReturnDate = rental.ActualReturnDate,
-                RentalDuration = rental.RentalDuration,
-                User = rental.User,
-            };
-
-        }
+        
 
 
         // POST: Rentals/Edit/5
@@ -165,24 +123,16 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    var path = string.Empty;
+                    var path = model.ImageUrl;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        path = Path.Combine(
-                            Directory.GetCurrentDirectory(),
-                            "wwwroot\\Images\\covers",
-                            model.ImageFile.FileName);
+                        
 
-                        using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await model.ImageFile.CopyToAsync(stream);
-                        }
-
-                        path = $"~/images/covers/{model.ImageFile.FileName}";
+                        path = await _imageHelper.UploadImageAsyn(model.ImageFile,"covers");
                     }
 
-                    var rental = this.ToRental(model, path);
+                   var rental= _converterHelper.ToRental(model, path, false);
 
                     rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                     await _rentalRepository.UpdateAsync(rental);

@@ -38,6 +38,7 @@ namespace Biblioteca.Web
                 cfg.Password.RequireLowercase = false;
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequiredLength = 6;
+                
             })
                 .AddEntityFrameworkStores<DataContext>();
             services.AddDbContext<DataContext>(cfg =>
@@ -47,7 +48,9 @@ namespace Biblioteca.Web
 
             services.AddControllersWithViews();
             services.AddTransient<SeedDb>();
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IUserHelper, UserHelper >();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
