@@ -18,7 +18,7 @@ namespace Biblioteca.Web.Controllers.API
         [HttpGet]
         public IActionResult GetReservations()
         {
-            return Ok(_reservationRepository.GetAll());
+            return Ok(_reservationRepository.GetAllWithUsers());
         }
     }
 }

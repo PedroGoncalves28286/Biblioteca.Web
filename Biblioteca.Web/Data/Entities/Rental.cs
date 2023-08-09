@@ -27,24 +27,29 @@ namespace Biblioteca.Web.Data.Entities
 
         public DateTime? StartDate { get; set; }
 
+        [Display(Name = "Return Date")]
         public DateTime? ScheduleReturnDate { get; set; }
 
+        [Display(Name = "Devolution")]
         public DateTime? ActualReturnDate { get; set; }   
 
         public int RentalDuration { get; set; } 
 
-        
-        public enum StatusEnum
-        {
-            Requested,
-            Approved,
-            Rejected,
-            Rented,
-            Closed
-
-        }
 
         public User User { get; set; }
+
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImageUrl))
+                {
+                    return null;
+                }
+
+                return $"https://localhost:44354{ImageUrl.Substring(1)}";
+            }
+        }
 
 
     }

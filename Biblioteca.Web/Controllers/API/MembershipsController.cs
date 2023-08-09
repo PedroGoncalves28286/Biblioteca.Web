@@ -18,7 +18,7 @@ namespace Biblioteca.Web.Controllers.API
         [HttpGet]
         public IActionResult GetMemberships()
         {
-            return Ok(_membershipRepository.GetAll());
+            return Ok(_membershipRepository.GetAllWithUsers());
         }
     }
 }

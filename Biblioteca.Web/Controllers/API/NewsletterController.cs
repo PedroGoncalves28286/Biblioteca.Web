@@ -18,7 +18,7 @@ namespace Biblioteca.Web.Controllers.API
         [HttpGet]
         public IActionResult GetNewsletters()
         {
-            return Ok(_newsletterRepository.GetAll());
+            return Ok(_newsletterRepository.GetAllWithUsers());
         }
     }
 }

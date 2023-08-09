@@ -16,10 +16,12 @@ namespace Biblioteca.Web.Data.Entities
         public byte SignUpFee { get; set; }
 
         [DisplayName("6 month rate")]
+        [DataType(DataType.Currency)]
         public byte ChargeRateSixMonth { get; set; }
 
 
         [DisplayName("12 month rate")]
+        [DataType(DataType.Currency)]
         public byte ChargeRateTwelveMonth { get; set; }
 
         public User User { get; set; }

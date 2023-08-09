@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
+using System.IO;
+using Biblioteca.Web.Models;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -56,15 +58,58 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Author,Title,BookId,ImageUrl,Availability,ISBN,Publisher,StartDate,ScheduleReturnDate,ActualReturnDate,RentalDuration")] Rental rental)
+        public async Task<IActionResult> Create(RentalViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var path = string.Empty;
+
+                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
+                    path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot\\Images\\covers",
+                        file);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await model.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/covers/{file}";
+                }
+
+                var rental = this.ToRental(model, path);
+
                 rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                 await _rentalRepository.CreateAsync(rental);
                 return RedirectToAction(nameof(Index));
             }
-            return View(rental);
+            return View(model);
+        }
+
+        private Rental ToRental(RentalViewModel model, string path)
+        {
+            return new Rental
+            {
+                Id = model.Id,
+                Borrower = model.Borrower,
+                Author = model.Author,
+                Title = model.Title,
+                BookId = model.BookId,
+                ImageUrl = path,
+                Availability = model.Availability,
+                ISBN = model.ISBN,
+                Publisher = model.Publisher,
+                StartDate = model.StartDate,
+                ScheduleReturnDate = model.ScheduleReturnDate,
+                ActualReturnDate = model.ActualReturnDate,
+                RentalDuration = model.RentalDuration,
+                User = model.User,
+            };
         }
 
         // GET: Rentals/Edit/5
@@ -80,31 +125,71 @@ namespace Biblioteca.Web.Controllers
             {
                 return NotFound();
             }
-            return View(rental);
+
+            var model = this.ToRentalViewModel(rental);
+
+            return View(model);
         }
+
+        private RentalViewModel ToRentalViewModel(Rental rental)
+        {
+            return new RentalViewModel
+            {
+                Id = rental.Id,
+                Borrower = rental.Borrower,
+                Author = rental.Author,
+                Title = rental.Title,
+                BookId = rental.BookId,
+                ImageUrl = rental.ImageUrl,
+                Availability = rental.Availability,
+                ISBN = rental.ISBN,
+                Publisher = rental.Publisher,
+                StartDate = rental.StartDate,
+                ScheduleReturnDate = rental.ScheduleReturnDate,
+                ActualReturnDate = rental.ActualReturnDate,
+                RentalDuration = rental.RentalDuration,
+                User = rental.User,
+            };
+
+        }
+
 
         // POST: Rentals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Author,Title,BookId,ImageUrl,Availability,ISBN,Publisher,StartDate,ScheduleReturnDate,ActualReturnDate,RentalDuration")] Rental rental)
+        public async Task<IActionResult> Edit(RentalViewModel model)
         {
-            if (id != rental.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = string.Empty;
+
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        path = Path.Combine(
+                            Directory.GetCurrentDirectory(),
+                            "wwwroot\\Images\\covers",
+                            model.ImageFile.FileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await model.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/covers/{model.ImageFile.FileName}";
+                    }
+
+                    var rental = this.ToRental(model, path);
+
                     rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                     await _rentalRepository.UpdateAsync(rental);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _rentalRepository.ExistAsync(rental.Id))
+                    if (!await _rentalRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -115,7 +200,9 @@ namespace Biblioteca.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(rental);
+            return View(model);
+
+
         }
 
         // GET: Rentals/Delete/5
@@ -144,6 +231,6 @@ namespace Biblioteca.Web.Controllers
             await _rentalRepository.DeleteAsync(rental);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
+

@@ -1,4 +1,6 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Biblioteca.Web.Data
 {
@@ -11,6 +13,11 @@ namespace Biblioteca.Web.Data
         {
             _context = context;
 
+        }
+
+        public IQueryable GetAllWithUsers()
+        {
+            return _context.Members.Include(p => p.User);
         }
     }
 }

@@ -62,17 +62,20 @@ namespace Biblioteca.Web.Controllers
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(),
                         "wwwroot\\Images\\authors",
-                        model.ImageFile.FileName);
+                        file);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await model.ImageFile.CopyToAsync(stream);
                     }
 
-                    path = $"~/images/authors/{model.ImageFile.FileName}";
+                    path = $"~/images/authors/{file}";
                 }
 
                 var author = this.ToAuthor(model, path);
@@ -139,7 +142,7 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    var path = string.Empty;
+                    var path = model.AuthorImage;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {

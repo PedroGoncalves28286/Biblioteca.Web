@@ -18,7 +18,7 @@ namespace Biblioteca.Web.Controllers.API
         [HttpGet]
         public IActionResult GetRentals()
         {
-            return Ok(_rentalRepository.GetAll());
+            return Ok(_rentalRepository.GetAllWithUsers());
         }
     }
 }

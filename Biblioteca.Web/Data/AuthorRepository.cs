@@ -1,4 +1,5 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Biblioteca.Web.Data
