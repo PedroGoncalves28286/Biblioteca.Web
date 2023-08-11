@@ -1,0 +1,17 @@
+﻿@model Biblioteca.Web.Data.Entities.Reservation
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Borrower" class="control-label"></label>
+    <input asp-for="Borrower" class="form-control" />
+    <span asp-validation-for="Borrower" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="ReservationNumber" class="control-label"></label>
+    <input asp-for="ReservationNumber" class="form-control" />
+    <span asp-validation-for="ReservationNumber" class="text-danger"></span>
+</div>
