@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.BookId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
+                @Html.DisplayNameFor(model => model.CoverId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Availability)
@@ -66,12 +66,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BookId)
             </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@Url.Content(item.ImageUrl)" alt="Image" style=" width:100px; height:150px;max-width:100%" ; height:auto>
-                    }
-                </td>
+            <td>    
+                <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">   
+           </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Availability)
             </td>

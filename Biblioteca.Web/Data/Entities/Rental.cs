@@ -17,7 +17,8 @@ namespace Biblioteca.Web.Data.Entities
 
         public int BookId { get; set; }
 
-        public string ImageUrl { get; set; }
+        [Display(Name ="Covers")]
+        public Guid CoverId { get; set; }
 
         public string Availability { get; set; }
 
@@ -38,18 +39,10 @@ namespace Biblioteca.Web.Data.Entities
 
         public User User { get; set; }
 
-        public string ImageFullPath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(ImageUrl))
-                {
-                    return null;
-                }
+        public string ImageFullPath => CoverId == Guid.Empty
+            ? $"https://booksonline.azurewebsites.net/images/no_image.png"
+            : $"https://bibliotecaarmazenamento.blob.core.windows.net/covers/{CoverId}";
 
-                return $"https://localhost:44354{ImageUrl.Substring(1)}";
-            }
-        }
 
 
     }

@@ -28,10 +28,7 @@
                 </dd>
             </dl>
         </div>
-        @if (!string.IsNullOrEmpty(Model.AuthorImage))
-        {
-            <img src="@Url.Content(Model.AuthorImage)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
-        }
+            <img src="@Url.Content(Model.ImageFullPath)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">     
     </div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />

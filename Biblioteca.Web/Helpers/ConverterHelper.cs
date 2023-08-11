@@ -1,16 +1,18 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Migrations;
 using Biblioteca.Web.Models;
+using System;
 
 namespace Biblioteca.Web.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        public Author ToAuthor(AuthorViewModel model, string path, bool isNew)
+        public Author ToAuthor(AuthorViewModel model,Guid authorImageId, bool isNew)
         { 
             return new Author
             {
                 Id = isNew ? 0 : model.Id,
-                AuthorImage = path,
+                AuthorImageId = authorImageId,
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
@@ -20,14 +22,14 @@ namespace Biblioteca.Web.Helpers
             return new AuthorViewModel
             {
                 Id = author.Id,
-                AuthorImage = author.AuthorImage,
+                AuthorImageId = author.AuthorImageId,
                 FirstName = author.FirstName,
                 LastName = author.LastName
             };
         }
 
 
-        public Rental ToRental(RentalViewModel model, string path, bool isNew)
+        public Rental ToRental(RentalViewModel model,Guid coverId, bool isNew)
         { 
             return new Rental
             {
@@ -36,7 +38,7 @@ namespace Biblioteca.Web.Helpers
                 Author = model.Author,
                 Title = model.Title,
                 BookId = model.BookId,
-                ImageUrl = path,
+                CoverId = coverId,
                 Availability = model.Availability,
                 ISBN = model.ISBN,
                 Publisher = model.Publisher,
@@ -57,7 +59,7 @@ namespace Biblioteca.Web.Helpers
                 Author = rental.Author,
                 Title = rental.Title,
                 BookId = rental.BookId,
-                ImageUrl = rental.ImageUrl,
+                CoverId = rental.CoverId,
                 Availability = rental.Availability,
                 ISBN = rental.ISBN,
                 Publisher = rental.Publisher,

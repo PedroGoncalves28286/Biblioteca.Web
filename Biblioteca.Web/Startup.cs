@@ -48,9 +48,9 @@ namespace Biblioteca.Web
 
             services.AddControllersWithViews();
             services.AddTransient<SeedDb>();
-            services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IUserHelper, UserHelper >();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
@@ -73,6 +73,7 @@ namespace Biblioteca.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

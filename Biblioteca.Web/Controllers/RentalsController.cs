@@ -18,16 +18,16 @@ namespace Biblioteca.Web.Controllers
         private readonly IRentalRepository _rentalRepository;
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
-        private readonly IImageHelper _imageHelper;
+        private readonly IBlobHelper _blobHelper;
 
         public RentalsController(IRentalRepository rentalRepository, IUserHelper userHelper ,
             IConverterHelper converterHelper,
-            IImageHelper imageHelper)
+             IBlobHelper blobHelper)
         {
             _rentalRepository = rentalRepository;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
-            _imageHelper = imageHelper;
+            _blobHelper = blobHelper;
         }
 
         // GET: Rentals
@@ -68,16 +68,16 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                Guid coverId = Guid.Empty;
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    
 
-                    path = await _imageHelper.UploadImageAsyn(model.ImageFile,"covers");
+                    coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
+                    
                 }
 
-                var rental = _converterHelper.ToRental(model, path, true);
+                var rental = _converterHelper.ToRental(model,coverId, true);
 
                 rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
 
@@ -123,16 +123,16 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    var path = model.ImageUrl;
+                     Guid coverId = model.CoverId;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        
 
-                        path = await _imageHelper.UploadImageAsyn(model.ImageFile,"covers");
+                        coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
+
                     }
 
-                   var rental= _converterHelper.ToRental(model, path, false);
+                   var rental= _converterHelper.ToRental(model,coverId, false);
 
                     rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
                     await _rentalRepository.UpdateAsync(rental);

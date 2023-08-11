@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Data.Entities
 {
@@ -7,25 +8,19 @@ namespace Biblioteca.Web.Data.Entities
 
         public int Id { get; set; }
 
-        public string AuthorImage { get; set; }
+        [Display(Name = "Author Image")]
+        public Guid AuthorImageId { get; set; }  
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
-        public string ImageFullPath
-        {
-            get
-            {
-                if(string.IsNullOrEmpty(AuthorImage))
-                {
-                    return null;
+        public string ImageFullPath => AuthorImageId == Guid.Empty
+            ? $"https://booksonline.azurewebsites.net/images/no_image.png"
+            : $"https://bibliotecaarmazenamento.blob.core.windows.net/authors/{AuthorImageId}";
+            
 
-                }
-                return $"https://localhost:44354{AuthorImage.Substring(1)}";
-            }
-        }
 
-        
+
     }
 }

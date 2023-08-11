@@ -14,16 +14,16 @@ namespace Biblioteca.Web.Controllers
     public class AuthorsController : Controller
     {
         private readonly IAuthorRepository _authorRepository;
-        private readonly IImageHelper _imageHelper;
+
         private readonly IConverterHelper _converterHelper;
+        private readonly IBlobHelper _blobHelper;
 
         public AuthorsController(IAuthorRepository authorRepository,
-            IImageHelper imageHelper,
-            IConverterHelper converterHelper)
+            IConverterHelper converterHelper, IBlobHelper blobHelper)
         {
             _authorRepository = authorRepository;
-            _imageHelper = imageHelper;
             _converterHelper = converterHelper;
+            _blobHelper = blobHelper;
         }
 
         // GET: Authors
@@ -65,16 +65,16 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path =string.Empty;
+                Guid authorImageId = Guid.Empty;   
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
                    
 
-                    path = await _imageHelper.UploadImageAsyn(model.ImageFile,"authors");   
+                    authorImageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "authors");
                 }
 
-                var author = _converterHelper.ToAuthor(model, path, true);
+                var author = _converterHelper.ToAuthor(model,authorImageId,true);
 
                 await _authorRepository.CreateAsync(author);
                 return RedirectToAction(nameof(Index));
@@ -118,15 +118,15 @@ namespace Biblioteca.Web.Controllers
             {
                 try
                 {
-                    var path = model.AuthorImage;
+                    Guid authorImageId = model.AuthorImageId;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                       
 
-                        path = await _imageHelper.UploadImageAsyn(model.ImageFile,"authors");
+                        authorImageId = await _blobHelper.UploadBlobAsync(model.ImageFile, "authors");
+                        
                     }
-                    var author= _converterHelper.ToAuthor(model,path, false);
+                    var author= _converterHelper.ToAuthor(model,authorImageId, false);
                     await _authorRepository.UpdateAsync(author);
                 }
                 catch (DbUpdateConcurrencyException)
