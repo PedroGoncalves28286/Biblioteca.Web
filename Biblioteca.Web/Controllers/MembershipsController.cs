@@ -58,11 +58,11 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,SignUpFee,ChargeRateSixMonth,ChargeRateTwelveMonth")] Membership membership)
+        public async Task<IActionResult> Create(Membership membership)
         {
             if (ModelState.IsValid)
             {
-                membership.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                membership.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _membershipRepository.CreateAsync(membership);    
                 return RedirectToAction(nameof(Index));
             }
@@ -90,18 +90,14 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,SignUpFee,ChargeRateSixMonth,ChargeRateTwelveMonth")] Membership membership)
+        public async Task<IActionResult> Edit(Membership membership)
         {
-            if (id != membership.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    membership.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                    membership.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _membershipRepository.UpdateAsync(membership);    
                 }
                 catch (DbUpdateConcurrencyException)

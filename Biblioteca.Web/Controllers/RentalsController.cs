@@ -80,7 +80,7 @@ namespace Biblioteca.Web.Controllers
 
                 var rental = _converterHelper.ToRental(model,coverId, true);
 
-                rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                rental.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
                 await _rentalRepository.CreateAsync(rental);
 
@@ -135,7 +135,7 @@ namespace Biblioteca.Web.Controllers
 
                    var rental= _converterHelper.ToRental(model,coverId, false);
 
-                    rental.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                    rental.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _rentalRepository.UpdateAsync(rental);
                 }
                 catch (DbUpdateConcurrencyException)

@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Helpers;
 
 namespace Biblioteca.Web.Controllers
 {
     public class NewslettersController : Controller
     {
         private readonly INewsletterRepository _newsletterRepository;
+        private readonly IUserHelper _userHelper;
 
-        public NewslettersController(INewsletterRepository newsletterRepository)
+        public NewslettersController(INewsletterRepository newsletterRepository,
+            IUserHelper userHelper)
         {
             _newsletterRepository = newsletterRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Newsletters
@@ -53,10 +57,11 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NewsID,Title,Content,AddDate")] Newsletter newsletter)
+        public async Task<IActionResult> Create(Newsletter newsletter)
         {
             if (ModelState.IsValid)
             {
+                newsletter.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _newsletterRepository.CreateAsync(newsletter);
                 return RedirectToAction(nameof(Index));
             }
@@ -84,17 +89,14 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NewsID,Title,Content,AddDate")] Newsletter newsletter)
+        public async Task<IActionResult> Edit(Newsletter newsletter)
         {
-            if (id != newsletter.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
+                    newsletter.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _newsletterRepository.UpdateAsync(newsletter);
                 }
                 catch (DbUpdateConcurrencyException)

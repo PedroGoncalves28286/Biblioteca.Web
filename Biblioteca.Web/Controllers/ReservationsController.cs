@@ -56,11 +56,11 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,UserId,ReservationNumber")] Reservation reservation)
+        public async Task<IActionResult> Create(Reservation reservation)
         {
             if (ModelState.IsValid)
             {
-                reservation.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                reservation.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _reservationRepository.CreateAsync(reservation);
                 return RedirectToAction(nameof(Index));
             }
@@ -88,18 +88,14 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserId,ReservationNumber")] Reservation reservation)
+        public async Task<IActionResult> Edit(Reservation reservation)
         {
-            if (id != reservation.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    reservation.User = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
+                    reservation.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
                     await _reservationRepository.UpdateAsync(reservation);
                 }
