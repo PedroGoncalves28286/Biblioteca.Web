@@ -10,6 +10,7 @@ using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using System.IO;
 using Biblioteca.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Biblioteca.Web.Controllers
 {
