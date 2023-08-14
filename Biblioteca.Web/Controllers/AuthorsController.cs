@@ -51,7 +51,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Authors/Create
-        [RoleAuthorization("Staff", "Admin")]
+        [RoleAuthorization("Admin")]
         public IActionResult Create()
         {
             return View();
@@ -60,7 +60,6 @@ namespace Biblioteca.Web.Controllers
         // POST: Authors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[Authorize(Roles = "Admin, Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AuthorViewModel model)
@@ -86,8 +85,9 @@ namespace Biblioteca.Web.Controllers
         }
 
 
-        //[Authorize(Roles = "Admin, Staff")]
+
         // GET: Authors/Edit/5
+        [RoleAuthorization("Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -110,7 +110,7 @@ namespace Biblioteca.Web.Controllers
         // POST: Authors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[Authorize(Roles = "Admin, Staff")]
+        [RoleAuthorization("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(AuthorViewModel model)
@@ -148,7 +148,7 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        //[Authorize(Roles = "Admin, Staff")]
+        [RoleAuthorization("Admin")]
         // GET: Authors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -166,7 +166,7 @@ namespace Biblioteca.Web.Controllers
 
             return View(author);
         }
-        //[Authorize(Roles = "Admin, Staff")]
+        [RoleAuthorization("Admin")]
         // POST: Authors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

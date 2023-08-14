@@ -28,13 +28,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Memberships" asp-action="Index">Memberships</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Newsletters" asp-action="Index">Newsletters</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Rentals" asp-action="Index">Rentals</a>
@@ -42,8 +36,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservations</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Newsletters" asp-action="Index">News</a>
+                        </li>
                         @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Members" asp-action="Index">Members</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -54,9 +54,6 @@
                                 </ul>
                             </li>
                         }
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                     </ul>
 
                     <ul class="nav navbar-nav navbar-righ text-dark">
