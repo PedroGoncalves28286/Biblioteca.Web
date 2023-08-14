@@ -16,17 +16,31 @@ namespace Biblioteca.Web.Data
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public SeedDb(DataContext context,IUserHelper  userHelper)
+
+        public SeedDb(
+            DataContext context,
+            IUserHelper userHelper,
+            SignInManager<User> signInManager,
+            RoleManager<IdentityRole> roleManager)
 
         {
             _context = context;
             _userHelper = userHelper;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Staff");
+            await _userHelper.CheckRoleAsync("Reader");
+
+
             var user = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
 
             if (user == null)
@@ -45,8 +59,14 @@ namespace Biblioteca.Web.Data
                 {
                     throw new InvalidOperationException("could not create the user in seeder");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
-      
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+            if(!isInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
+            }
             if (!_context.Authors.Any())
             {
                 AddAuthor("Marcele", "Proust", user);
