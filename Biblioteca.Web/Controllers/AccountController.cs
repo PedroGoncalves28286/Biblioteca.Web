@@ -46,7 +46,7 @@ namespace Biblioteca.Web.Controllers
                 }
             }
 
-            this.ModelState.AddModelError(string.Empty, "Failed to login");
+            this.ModelState.AddModelError(string.Empty, "Failed to login!");
             return View(model);
         }
         public async Task<IActionResult> Logout()
@@ -99,8 +99,60 @@ namespace Biblioteca.Web.Controllers
                     ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
                 }
             }
+            return View(model);
+        }
+       
+
+        public async Task<IActionResult> ChangeUser()
+        {
+
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+            var model = new ChangeUserViewModel();
+
+            if (user != null)
+
+            {
+
+                model.FirstName = user.FirstName;
+
+                model.LastName = user.LastName;
+
+            }
 
             return View(model);
+
+        }
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("ChangeUser");
+                    }
+                    else
+                    {
+                        this.ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    this.ModelState.AddModelError(string.Empty, "User not found.");
+                }
+            }
+
+            return this.View(model);
         }
     }
 }
