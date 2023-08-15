@@ -23,6 +23,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Members
+        [RoleAuthorization("Admin")]
         public  IActionResult Index()
         {
             return View(_memberRepository.GetAll().OrderBy(l => l.LastName));
@@ -46,6 +47,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Members/Create
+        [RoleAuthorization("Admin")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +56,7 @@ namespace Biblioteca.Web.Controllers
         // POST: Members/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [RoleAuthorization("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Member member)
@@ -68,6 +71,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Members/Edit/5
+        [RoleAuthorization("Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,6 +90,7 @@ namespace Biblioteca.Web.Controllers
         // POST: Members/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [RoleAuthorization("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Member member)
@@ -115,6 +120,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Members/Delete/5
+        [RoleAuthorization("Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,6 +139,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // POST: Members/Delete/5
+        [RoleAuthorization("Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

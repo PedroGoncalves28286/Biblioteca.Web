@@ -37,7 +37,7 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
-            var membership = _membershipRepository.GetByIdAsync(id.Value);
+            var membership = await _membershipRepository.GetByIdAsync(id.Value);
                 
             if (membership == null)
             {

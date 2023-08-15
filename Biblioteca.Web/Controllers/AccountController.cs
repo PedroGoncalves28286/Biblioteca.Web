@@ -80,7 +80,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // Add a new action to display the account creation form
-        [Authorize(Roles = "Admin")]
+        [RoleAuthorization("Admin")]
         public IActionResult Create()
         {
             var roles = _roleManager.Roles.ToList();

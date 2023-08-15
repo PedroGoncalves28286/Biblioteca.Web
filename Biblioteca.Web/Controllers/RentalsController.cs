@@ -55,6 +55,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Rentals/Create
+        [RoleAuthorization("Admin", "Staff")]
         public IActionResult Create()
         {
             return View();
@@ -63,6 +64,7 @@ namespace Biblioteca.Web.Controllers
         // POST: Rentals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [RoleAuthorization("Admin", "Staff")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RentalViewModel model)
@@ -89,8 +91,9 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        
+
         // GET: Rentals/Edit/5
+        [RoleAuthorization("Staff", "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -110,12 +113,13 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        
+
 
 
         // POST: Rentals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [RoleAuthorization("Staff", "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(RentalViewModel model)
@@ -157,6 +161,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Rentals/Delete/5
+        [RoleAuthorization("Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -174,6 +179,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // POST: Rentals/Delete/5
+        [RoleAuthorization("Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
