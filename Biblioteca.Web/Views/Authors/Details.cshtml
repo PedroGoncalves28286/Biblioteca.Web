@@ -35,7 +35,8 @@
 <div>
     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Edit</button>
+       
                     }
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-success"><i class="fa fa-chevron-left"></i> Back to List</a>
 </div>
