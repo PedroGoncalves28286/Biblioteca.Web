@@ -48,6 +48,11 @@ namespace Biblioteca.Web.Helpers
             }
         }
 
+        public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
+        {
+            return await _userManager.ConfirmEmailAsync(user, token);
+        }
+
         public async Task<IdentityResult> CreateUserAsync(User user, string password, string roleName)
         {
             var result = await _userManager.CreateAsync(user, password);
@@ -61,6 +66,11 @@ namespace Biblioteca.Web.Helpers
             return result;
         }
 
+        public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await Task.FromResult(_userManager.Users.ToList());
@@ -70,6 +80,11 @@ namespace Biblioteca.Web.Helpers
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);  
+        }
+
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
         }
 
         public async Task<bool> IsUserInRoleAsync(User user, string roleName)
@@ -94,6 +109,14 @@ namespace Biblioteca.Web.Helpers
         public async Task<IdentityResult> UpdateUserAsync(User user)
         {
             return await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(
+                user,
+                password,
+                false);
         }
     }
 }

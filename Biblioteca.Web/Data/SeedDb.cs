@@ -61,12 +61,16 @@ namespace Biblioteca.Web.Data
                 }
 
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
+
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
             if(!isInRole)
             {
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
+
             if (!_context.Authors.Any())
             {
                 AddAuthor("Marcele", "Proust", user);
