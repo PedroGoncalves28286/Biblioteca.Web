@@ -64,6 +64,14 @@
     </div>
 </div>
 
+@if (TempData["EmailConfirmationMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["EmailConfirmationMessage"]
+    </div>
+}
+
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

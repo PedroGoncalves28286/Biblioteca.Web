@@ -156,8 +156,8 @@ namespace Biblioteca.Web.Controllers
 
                     if (response.IsSuccess)
                     {
-                        ViewBag.Message = "User created successfully.";
-                        return RedirectToAction("Index", "Home");
+                        TempData["EmailConfirmationMessage"] = "Email confirmation link has been sent to the user's email.";
+                        return RedirectToAction("Create", "Account");
                     }
                     else
                     {
