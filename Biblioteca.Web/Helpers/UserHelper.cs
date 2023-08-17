@@ -66,6 +66,12 @@ namespace Biblioteca.Web.Helpers
             return result;
         }
 
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+            return result;
+        }
+
         public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);

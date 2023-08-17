@@ -4,9 +4,7 @@
 
 <h2>User List</h2>
 
-
-
-<table class="table table-bordered table-striped" style="width: 100%">
+<table class="table">
     <thead>
         <tr>
             <th>Username</th>
@@ -24,13 +22,18 @@
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
                 <td>
-                    @string.Join(", ", roles)
+                    @roles.FirstOrDefault()
                 </td>
                 <td>
-
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-trash"></i> Delete</button>
+                    <!-- Add a form element around the delete button -->
+                    <form asp-controller="Account" asp-action="Delete" method="post">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-trash"></i> Delete</button>
+                    </form>
                 </td>
             </tr>
         }
+
     </tbody>
 </table>
+

@@ -127,9 +127,42 @@ namespace Biblioteca.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    // User created successfully
-                    // Redirect or show a success message
-                    return RedirectToAction("Index", "Home"); // Redirect to the desired page
+                    // Check if the "Reader" role exists
+                    await _userHelper.CheckRoleAsync("Reader");
+
+                    // Add the user to the "Reader" role
+                    await _userHelper.AddUserToRoleAsync(user, "Reader");
+
+                    // Generate email confirmation token
+                    var emailConfirmationToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+
+                    // Create confirmation link
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userId = user.Id,
+                        token = emailConfirmationToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    // Send confirmation email
+                    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    string tokenLink = Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userId = user.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
+
+                    Response response = await _mailHelper.SendEmail(user.Email, "Email confirmation",
+                        $"<h1>Email Confirmation</h1>To allow the user, please click in this link: </br></br><a href=\"{tokenLink}\">Confirm Email</a>");
+
+                    if (response.IsSuccess)
+                    {
+                        ViewBag.Message = "User created successfully.";
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Failed to send confirmation email.");
+                    }
                 }
                 else
                 {
@@ -143,10 +176,15 @@ namespace Biblioteca.Web.Controllers
             }
 
             // Repopulate the roles dropdown in case of validation errors
-            var roles = await _roleManager.Roles.ToListAsync();
-            ViewBag.Roles = new SelectList(roles, "Name", "Name");
+            ViewBag.Roles = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(model);
         }
+
+
+
+
+
+
 
         public IActionResult Register()
         {
@@ -189,21 +227,25 @@ namespace Biblioteca.Web.Controllers
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
-                    Response response = _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    // Use the SendEmail method and await its response
+                    var response = await _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
                         $"To allow the user, " +
                         $"please click in this link: </br></br><a href = \"{tokenLink}\">Confirm Email</a>");
 
                     if (response.IsSuccess)
                     {
-                        ViewBag.Message = "The instructions to allow your user have been sent to your email.";
+                        ViewBag.Message = "The instructions to allow your user has been sent to your email.";
                         return View(model);
                     }
-
-                    ModelState.AddModelError(string.Empty, "The user couldn't be registered.");
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "The user couldn't be registered.");
+                    }
                 }
             }
             return View(model);
         }
+
 
 
         public async Task<IActionResult> UserList()
@@ -212,20 +254,31 @@ namespace Biblioteca.Web.Controllers
 
             // Create a URL that includes the current URL as a query parameter
             var currentUrl = Url.Action("UserList", "Account", null, Request.Scheme);
+
+            // Get all roles to be used in the view
+            var allRoles = await _roleManager.Roles.ToListAsync();
+
             var usersWithRoles = new List<UserWithRolesViewModel>();
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+
+                // Map roles to their names and filter out empty names
+                var roleNames = roles.Select(role => allRoles.FirstOrDefault(r => r.Name == role)?.Name)
+                                     .Where(name => !string.IsNullOrEmpty(name))
+                                     .ToList();
+
                 usersWithRoles.Add(new UserWithRolesViewModel
                 {
                     User = user,
-                    Roles = roles.ToList(),
+                    Roles = roleNames,
                     UserListUrl = currentUrl // Pass the URL to the view model
                 });
             }
 
             return View(usersWithRoles);
         }
+
 
         public async Task<IActionResult> ChangeUser()
         {
@@ -346,5 +399,51 @@ namespace Biblioteca.Web.Controllers
         {
             return View();
         }
+
+        [RoleAuthorization("Admin")]
+        public async Task<IActionResult> Delete(string userId)
+        {
+            var user = await _userHelper.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RoleAuthorization("Admin")]
+        public async Task<IActionResult> DeleteConfirmed(string Id)
+        {
+            var user = await _userHelper.GetUserByIdAsync(Id);
+
+            if (user != null)
+            {
+                var result = await _userHelper.DeleteUserAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home"); // Redirect to the desired page
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "User not found.");
+            }
+
+            // Redirect back to the Delete view with the user's details
+            return View("Delete", user);
+        }
+
     }
 }

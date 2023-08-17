@@ -2,7 +2,7 @@
 
 namespace Biblioteca.Web.Migrations
 {
-    public partial class addcreate : Migration
+    public partial class AddCreateAndDelete : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

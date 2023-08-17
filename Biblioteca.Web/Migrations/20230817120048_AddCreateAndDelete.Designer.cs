@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230814171212_addcreate")]
-    partial class addcreate
+    [Migration("20230817120048_AddCreateAndDelete")]
+    partial class AddCreateAndDelete
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

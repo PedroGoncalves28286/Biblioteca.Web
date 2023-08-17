@@ -32,5 +32,7 @@ namespace Biblioteca.Web.Helpers
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
 
         Task<User> GetUserByIdAsync(string userId);
+
+        Task<IdentityResult> DeleteUserAsync(User user);
     }
 }

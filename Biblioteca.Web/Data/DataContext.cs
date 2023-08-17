@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Biblioteca.Web.Data
 {
-    public class DataContext : IdentityDbContext <User>
+    public class DataContext : IdentityDbContext<User>
     {
 
         public DbSet<Rental> Rentals { get; set; }
@@ -21,6 +21,8 @@ namespace Biblioteca.Web.Data
 
 
         public DbSet<Member> Members { get; set; }
+
+        public DbSet<User> users { get; set; }
 
      
         public DataContext(DbContextOptions<DataContext>options ):base(options)
