@@ -42,13 +42,13 @@ namespace Biblioteca.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(rental);
@@ -98,13 +98,13 @@ namespace Biblioteca.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var model = _converterHelper.ToRentalViewModel(rental);
@@ -166,13 +166,13 @@ namespace Biblioteca.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var rental = await _rentalRepository.GetByIdAsync(id.Value);
             if (rental == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             return View(rental);
@@ -187,6 +187,10 @@ namespace Biblioteca.Web.Controllers
             var rental = await _rentalRepository.GetByIdAsync(id);
             await _rentalRepository.DeleteAsync(rental);
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult ProductNotFound()
+        {
+            return View();
         }
     }
 }
