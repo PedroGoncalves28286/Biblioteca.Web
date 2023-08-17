@@ -13,8 +13,9 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Author { get; set; }
 
-        public string Title { get; set; } 
+        public string Title { get; set; }
 
+        [Display(Name = "Book ID")]
         public int BookId { get; set; }
 
         [Display(Name ="Covers")]
@@ -26,14 +27,16 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Publisher { get; set; }
 
+        [Display(Name = "Start date")]
         public DateTime? StartDate { get; set; }
 
-        [Display(Name = "Return Date")]
+        [Display(Name = "Return date")]
         public DateTime? ScheduleReturnDate { get; set; }
 
         [Display(Name = "Devolution")]
-        public DateTime? ActualReturnDate { get; set; }   
+        public DateTime? ActualReturnDate { get; set; }
 
+        [Display(Name = "Rental duration")]
         public int RentalDuration { get; set; } 
 
 

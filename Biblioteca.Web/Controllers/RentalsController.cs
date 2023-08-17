@@ -55,7 +55,7 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Rentals/Create
-        [RoleAuthorization("Admin", "Staff")]
+        [RoleAuthorization("Admin", "Staff", "Reader")]
         public IActionResult Create()
         {
             return View();
@@ -64,7 +64,7 @@ namespace Biblioteca.Web.Controllers
         // POST: Rentals/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [RoleAuthorization("Admin", "Staff")]
+        [RoleAuthorization("Admin", "Staff", "Reader")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RentalViewModel model)
