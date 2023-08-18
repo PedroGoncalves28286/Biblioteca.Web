@@ -1,6 +1,7 @@
 ﻿using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -35,7 +36,7 @@ namespace Biblioteca.Web.Data
 
         public async Task SeedAsync()
         {
-            await _context.Database.EnsureCreatedAsync();
+            await _context.Database.MigrateAsync();
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Staff");
             await _userHelper.CheckRoleAsync("Reader");
@@ -119,13 +120,13 @@ namespace Biblioteca.Web.Data
                 await _context.SaveChangesAsync();
             }
 
-            if (!_context.Rentals.Any())
+            if (!_context.Books.Any())
             {
                 // Add a default rental when the "Rentals" collection is empty.
-                AddRental("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddRental("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddRental("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddRental("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddBook("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddBook("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddBook("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddBook("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
                 await _context.SaveChangesAsync();
             }
 
@@ -174,9 +175,9 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddRental(string borrower, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
+        private void AddBook(string borrower, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
         {
-            _context.Rentals.Add(new Rental
+            _context.Books.Add(new Book
             {
                 Borrower = borrower,
                 Author = author,

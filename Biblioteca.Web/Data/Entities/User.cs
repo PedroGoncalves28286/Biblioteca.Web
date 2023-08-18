@@ -8,6 +8,6 @@ namespace Biblioteca.Web.Data.Entities
 
         public string LastName { get; set; }
 
-        
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

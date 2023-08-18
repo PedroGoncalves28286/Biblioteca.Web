@@ -29,9 +29,9 @@ namespace Biblioteca.Web.Helpers
         }
 
 
-        public Rental ToRental(RentalViewModel model,Guid coverId, bool isNew)
+        public Book ToRental(BookViewModel model,Guid coverId, bool isNew)
         { 
-            return new Rental
+            return new Book
             {
                 Id = isNew ? 0 : model.Id,
                 Borrower = model.Borrower,
@@ -50,9 +50,9 @@ namespace Biblioteca.Web.Helpers
             };
         }
 
-        public RentalViewModel ToRentalViewModel(Rental rental)
+        public BookViewModel ToRentalViewModel(Book rental)
         {
-            return new RentalViewModel
+            return new BookViewModel
             {
                 Id = rental.Id,
                 Borrower = rental.Borrower,

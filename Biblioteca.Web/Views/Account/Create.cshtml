@@ -3,6 +3,14 @@
     ViewData["Title"] = "Create";
 }
 
+@if (TempData["EmailConfirmationMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["EmailConfirmationMessage"]
+    </div>
+}
+
+
 <h1>Create</h1>
 
 <div class="row">
@@ -64,12 +72,6 @@
     </div>
 </div>
 
-@if (TempData["EmailConfirmationMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["EmailConfirmationMessage"]
-    </div>
-}
 
 
 @section Scripts {

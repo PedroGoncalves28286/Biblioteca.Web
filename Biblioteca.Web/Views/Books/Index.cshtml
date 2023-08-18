@@ -1,18 +1,18 @@
-﻿@model IEnumerable<Biblioteca.Web.Data.Entities.Rental>
+﻿@model IEnumerable<Biblioteca.Web.Data.Entities.Book>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Rentals</h1>
+<h1>Books</h1>
 
 @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff") || this.User.IsInRole("Reader")))
-                    {
-                    <p>
+{
+    <p>
         <a asp-action="Create" class="btn btn-primary"> <i class="fa-regular fa-plus fa-xl" style="color: #FFCB74;"></i> Create New</a>
 
     </p>
-                    }
+}
 <table class="table">
     <thead>
         <tr>
@@ -56,45 +56,46 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Borrower)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookId)
-            </td>
-            <td>    
-                <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">   
-           </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Availability)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ISBN)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publisher)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScheduleReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ActualReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RentalDuration)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Borrower)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookId)
+                </td>
+                <td>
+                    <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Availability)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ISBN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publisher)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScheduleReturnDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActualReturnDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RentalDuration)
+                </td>
+                <td>
                     @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
@@ -104,8 +105,8 @@
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i>    Delete</a>
                     }
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Models
 {
-    public class RentalViewModel : Rental
+    public class BookViewModel : Book
     {
-        [Display(Name ="Cover")]
+        [Display(Name = "Cover")]
 
         public IFormFile ImageFile { get; set; }
 

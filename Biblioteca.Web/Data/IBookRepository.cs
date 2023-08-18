@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Biblioteca.Web.Data
 {
-    public interface IRentalRepository : IGenericRepository<Rental>
+    public interface IBookRepository : IGenericRepository<Book>
     {
         public IQueryable GetAllWithUsers();
     }

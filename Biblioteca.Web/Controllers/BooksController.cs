@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Biblioteca.Web.Data;
+using Biblioteca.Web.Helpers;
+using Biblioteca.Web.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Biblioteca.Web.Data;
-using Biblioteca.Web.Data.Entities;
-using Biblioteca.Web.Helpers;
-using System.IO;
-using Biblioteca.Web.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Biblioteca.Web.Controllers
 {
-    public class RentalsController : Controller
+    public class BooksController : Controller
     {
-        private readonly IRentalRepository _rentalRepository;
+        private readonly IBookRepository _bookRepository;
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
 
-        public RentalsController(IRentalRepository rentalRepository, IUserHelper userHelper ,
+        public BooksController(IBookRepository bookRepository, IUserHelper userHelper,
             IConverterHelper converterHelper,
              IBlobHelper blobHelper)
         {
-            _rentalRepository = rentalRepository;
+            _bookRepository = bookRepository;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
@@ -34,7 +29,7 @@ namespace Biblioteca.Web.Controllers
         // GET: Rentals
         public IActionResult Index()
         {
-            return View(_rentalRepository.GetAll().OrderBy(u => u.Borrower));
+            return View(_bookRepository.GetAll().OrderBy(u => u.Borrower));
         }
 
         // GET: Rentals/Details/5
@@ -45,13 +40,13 @@ namespace Biblioteca.Web.Controllers
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var rental = await _rentalRepository.GetByIdAsync(id.Value);
-            if (rental == null)
+            var book = await _bookRepository.GetByIdAsync(id.Value);
+            if (book == null)
             {
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            return View(rental);
+            return View(book);
         }
 
         // GET: Rentals/Create
@@ -67,7 +62,7 @@ namespace Biblioteca.Web.Controllers
         [RoleAuthorization("Admin", "Staff", "Reader")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RentalViewModel model)
+        public async Task<IActionResult> Create(BookViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -77,14 +72,14 @@ namespace Biblioteca.Web.Controllers
                 {
 
                     coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
-                    
+
                 }
 
-                var rental = _converterHelper.ToRental(model,coverId, true);
+                var book = _converterHelper.ToRental(model, coverId, true);
 
-                rental.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
-                await _rentalRepository.CreateAsync(rental);
+                await _bookRepository.CreateAsync(book);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -101,14 +96,14 @@ namespace Biblioteca.Web.Controllers
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var rental = await _rentalRepository.GetByIdAsync(id.Value);
-            if (rental == null)
+            var book = await _bookRepository.GetByIdAsync(id.Value);
+            if (book == null)
             {
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var model = _converterHelper.ToRentalViewModel(rental);
-            
+            var model = _converterHelper.ToRentalViewModel(book);
+
 
             return View(model);
         }
@@ -122,13 +117,13 @@ namespace Biblioteca.Web.Controllers
         [RoleAuthorization("Staff", "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(RentalViewModel model)
+        public async Task<IActionResult> Edit(BookViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                     Guid coverId = model.CoverId;
+                    Guid coverId = model.CoverId;
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
@@ -137,14 +132,14 @@ namespace Biblioteca.Web.Controllers
 
                     }
 
-                   var rental= _converterHelper.ToRental(model,coverId, false);
+                    var book = _converterHelper.ToRental(model, coverId, false);
 
-                    rental.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                    await _rentalRepository.UpdateAsync(rental);
+                    book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _bookRepository.UpdateAsync(book);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _rentalRepository.ExistAsync(model.Id))
+                    if (!await _bookRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -169,13 +164,13 @@ namespace Biblioteca.Web.Controllers
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var rental = await _rentalRepository.GetByIdAsync(id.Value);
-            if (rental == null)
+            var book = await _bookRepository.GetByIdAsync(id.Value);
+            if (book == null)
             {
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            return View(rental);
+            return View(book);
         }
 
         // POST: Rentals/Delete/5
@@ -184,8 +179,8 @@ namespace Biblioteca.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var rental = await _rentalRepository.GetByIdAsync(id);
-            await _rentalRepository.DeleteAsync(rental);
+            var book = await _bookRepository.GetByIdAsync(id);
+            await _bookRepository.DeleteAsync(book);
             return RedirectToAction(nameof(Index));
         }
         public IActionResult ProductNotFound()
@@ -194,4 +189,3 @@ namespace Biblioteca.Web.Controllers
         }
     }
 }
-

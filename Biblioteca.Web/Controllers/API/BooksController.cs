@@ -9,19 +9,19 @@ namespace Biblioteca.Web.Controllers.API
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class RentalsController : Controller
+    public class BooksController : Controller
     {
-        private readonly IRentalRepository _rentalRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public RentalsController(IRentalRepository rentalRepository)
+        public BooksController(IBookRepository bookRepository)
         {
-            _rentalRepository = rentalRepository;
+            _bookRepository = bookRepository;
         }
 
         [HttpGet]
-        public IActionResult GetRentals()
+        public IActionResult GetBooks()
         {
-            return Ok(_rentalRepository.GetAllWithUsers());
+            return Ok(_bookRepository.GetAllWithUsers());
         }
     }
 }

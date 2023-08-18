@@ -7,7 +7,7 @@ namespace Biblioteca.Web.Data
     public class DataContext : IdentityDbContext<User>
     {
 
-        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<Book> Books { get; set; }
 
         public DbSet<Author> Authors { get; set; }
 
@@ -22,9 +22,13 @@ namespace Biblioteca.Web.Data
 
         public DbSet<Member> Members { get; set; }
 
-        public DbSet<User> users { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
-     
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        public DbSet<OrderDetailTemp> OrderDetailsTemp { get; set; }
+
+
         public DataContext(DbContextOptions<DataContext>options ):base(options)
         {
             

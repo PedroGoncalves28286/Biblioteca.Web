@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace Biblioteca.Web.Data
 {
-    public class RentalRepository : GenericRepository<Rental>, IRentalRepository
+    public class BookRepository : GenericRepository<Book>, IBookRepository
     {
         private readonly DataContext _context;
 
-        public RentalRepository(DataContext context) : base(context)
+        public BookRepository(DataContext context) : base(context)
         {
             _context = context;
         }
 
         public IQueryable GetAllWithUsers()
         {
-            return _context.Rentals.Include(p => p.User);
+            return _context.Books.Include(p => p.User);
         }
     }
 }
