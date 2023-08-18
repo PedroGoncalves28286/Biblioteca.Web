@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Data.Entities
 {
@@ -8,6 +9,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public string LastName { get; set; }
 
+        [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
     }
 }

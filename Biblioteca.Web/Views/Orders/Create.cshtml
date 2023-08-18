@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Biblioteca.Web.Data.Entities.OrderDetailTemp>
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+<p>
+    <a asp-action="AddBook" class="btn btn-success">Add Book</a>
+    <a asp-action="ConfirmOrder" class="btn btn-primary" id="btnConfirm">Confirm Order</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Book.Title)
+            </th>      
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Book.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td id="@item.Id">
+                    <a asp-action="Increase" asp-route-id="@item.Id" class="btn btn-warning"><i class="fa fa-plus"></i></a>
+                    <a asp-action="Decrease" asp-route-id="@item.Id" class="btn btn-info"><i class="fa fa-minus"></i></a>
+                    <a asp-action="DeleteItem" asp-route-id="@item.Id" class="btn btn-danger" id="btnDeleteItem"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
