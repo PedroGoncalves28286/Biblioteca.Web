@@ -16,5 +16,7 @@ namespace Biblioteca.Web.Data
         Task AddItemToOrderAsync(AddItemViewModel model, string userName);
 
         Task ModifyOrderDetailTempQuantityAsync(int id, int quantity);
+
+        Task DeleteDetailTempAsync(int id);
     }
 }
