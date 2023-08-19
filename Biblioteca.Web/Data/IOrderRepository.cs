@@ -1,4 +1,5 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data.Odbc;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace Biblioteca.Web.Data
 
         Task<IQueryable<OrderDetailTemp>> GetDetailTempAsync(string userName);
 
-        
+        Task AddItemToOrderAsync(AddItemViewModel model, string userName);
+
+        Task ModifyOrderDetailTempQuantityAsync(int id, int quantity);
     }
 }

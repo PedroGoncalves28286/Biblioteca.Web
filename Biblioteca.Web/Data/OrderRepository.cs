@@ -1,6 +1,9 @@
 ﻿using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
+using Biblioteca.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using Microsoft.WindowsAzure.Storage;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +18,43 @@ namespace Biblioteca.Web.Data
         {
             _context = context;
             _userHelper = userHelper;
+        }
+
+        public async Task AddItemToOrderAsync(AddItemViewModel model, string userName)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return;
+            }
+
+            var book = await _context.Books.FindAsync(model.BookId);
+            if (book == null)
+            {
+                return;
+            }
+
+            var orderDetailTemp = await _context.OrderDetailsTemp
+                .Where(odt => odt.User == user && odt.Book == book)
+                .FirstOrDefaultAsync();
+
+            if (orderDetailTemp == null)
+            {
+                orderDetailTemp = new OrderDetailTemp
+                {
+                    Book = book,
+                    Quantity = model.Quantity,
+                    User = user
+                };
+                _context.OrderDetailsTemp.Add(orderDetailTemp);
+            }
+            else
+            {
+                orderDetailTemp.Quantity += model.Quantity;
+                _context.OrderDetailsTemp.Update(orderDetailTemp);
+            }
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IQueryable<OrderDetailTemp>> GetDetailTempAsync(string userName)
@@ -51,6 +91,22 @@ namespace Biblioteca.Web.Data
                 .ThenInclude(b => b.Book)
                 .Where(o => o.User == user)
                 .OrderByDescending(o => o.OrderDate);
+        }
+
+        public async Task ModifyOrderDetailTempQuantityAsync(int id, int quantity)
+        {
+            var orderDetailTemp = await _context.OrderDetailsTemp.FindAsync(id);
+            if (orderDetailTemp == null)
+            {
+                return;
+            }
+
+            orderDetailTemp.Quantity += quantity;
+            if (orderDetailTemp.Quantity > 0)
+            {
+                _context.OrderDetailsTemp.Update(orderDetailTemp);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
