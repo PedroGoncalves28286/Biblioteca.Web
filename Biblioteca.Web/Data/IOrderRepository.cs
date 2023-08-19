@@ -11,12 +11,19 @@ namespace Biblioteca.Web.Data
     {
         Task<IQueryable<Order>> GetOrderAsync(string userName);
 
+
         Task<IQueryable<OrderDetailTemp>> GetDetailTempAsync(string userName);
+
 
         Task AddItemToOrderAsync(AddItemViewModel model, string userName);
 
+
         Task ModifyOrderDetailTempQuantityAsync(int id, int quantity);
 
+
         Task DeleteDetailTempAsync(int id);
+
+
+        Task<bool> ConfirmOrderAsync(string userName);
     }
 }
