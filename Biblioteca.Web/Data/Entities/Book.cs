@@ -27,7 +27,9 @@ namespace Biblioteca.Web.Data.Entities
         public string ISBN { get; set; }
 
         public string Publisher { get; set; }
-        
+
+        public bool IsAvailable { get; set; }
+
         public User User { get; set; }
 
         public string ImageFullPath => CoverId == Guid.Empty

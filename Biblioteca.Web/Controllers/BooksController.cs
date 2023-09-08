@@ -127,14 +127,25 @@ namespace Biblioteca.Web.Controllers
 
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-
                         coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
-
                     }
 
-                    var book = _converterHelper.ToRental(model, coverId, false);
+                    var book = await _bookRepository.GetBookByIdAsync(model.Id);
+
+                    if (book == null)
+                    {
+                        return NotFound(); // Handle the case where the book is not found
+                    }
+
+                    book.CoverId = coverId;
+                    book.Author = model.Author;
+                    book.Title = model.Title;
+
+                    // Update the availability status based on the checkbox value
+                    book.IsAvailable = model.IsAvailable;
 
                     book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
                     await _bookRepository.UpdateAsync(book);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -151,9 +162,8 @@ namespace Biblioteca.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
-
-
         }
+
 
         // GET: Rentals/Delete/5
         [RoleAuthorization("Admin")]
@@ -194,9 +204,16 @@ namespace Biblioteca.Web.Controllers
             }
         }
 
-        public IActionResult ProductNotFound()
+        [HttpGet]
+        [Route("Books/CheckAvailability/{bookId}")]
+        public async Task<IActionResult> CheckAvailability(int bookId)
         {
-            return View();
+            var book = await _bookRepository.GetBookByIdAsync(bookId);
+
+            // Check if the book is available
+            var available = book != null && book.IsAvailable;
+
+            return Json(new { available });
         }
     }
 }

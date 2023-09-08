@@ -49,10 +49,14 @@ namespace Biblioteca.Web.Controllers
 
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> AddBook(AddItemViewModel model)
         {
-            if (ModelState.IsValid)
+            // Check if the selected book is available
+            var selectedBook = await _bookRepository.GetBookByIdAsync(model.BookId);
+
+            if (ModelState.IsValid && selectedBook != null && selectedBook.IsAvailable)
             {
                 // Set the current date as the LendDate when adding the book
                 model.LendDate = DateTime.Now;
@@ -61,8 +65,14 @@ namespace Biblioteca.Web.Controllers
                 return RedirectToAction("Create");
             }
 
+            // If the model state is not valid or the book is not available, return to the view.
+            model.Books = _bookRepository.GetComboBooks();
+
+            // The client-side code will handle displaying the error message.
             return View(model);
         }
+    
+
 
         public async Task<IActionResult> DeleteItem(int? id)
         {

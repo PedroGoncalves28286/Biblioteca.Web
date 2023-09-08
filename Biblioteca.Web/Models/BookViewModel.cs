@@ -10,6 +10,7 @@ namespace Biblioteca.Web.Models
 
         public IFormFile ImageFile { get; set; }
 
-
+        [Display(Name = "Is Available")]
+        public bool IsAvailable { get; set; }
     }
 }

@@ -51,6 +51,18 @@ button.accept-policy {
   line-height: inherit;
 }
 
+/* Availability in addbook
+-------------------------------------------------- */
+.available {
+    color: green;
+    font-weight: bold;
+}
+
+.unavailable {
+    color: red;
+    font-weight: bold;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
