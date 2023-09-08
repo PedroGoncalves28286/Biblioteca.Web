@@ -98,17 +98,7 @@ namespace Biblioteca.Web.Data
 
                 await _context.SaveChangesAsync();
             }
-            if (!_context.Memberships.Any())
-            {
-                AddMembership("João Manuel", 5, 10, 12,user);
-                AddMembership("Rafael Santos", 5, 10, 12,user);
-                AddMembership("Jorge Tomé", 5, 10, 12,user);
-                AddMembership("Maria Albertina", 5, 10, 12,user);
-                AddMembership("Maria Joana", 5, 10, 12,user);
-                AddMembership("Branca de Neve", 5, 10, 12,user);
-
-                await _context.SaveChangesAsync();
-            }
+            
             if (!_context.Newsletters.Any())
             {
                 AddNewsletter(1, "A Divina Comedia", "An Italian narrative poem by Dante Alighieri", DateTime.Now,user);
@@ -132,7 +122,7 @@ namespace Biblioteca.Web.Data
 
             if (!_context.Members.Any())
             {
-                AddMember("Maria","Albertina","919942532",DateTime.Now,true,123456,user);
+                AddMember("Maria", "Albertina", "919942532", DateTime.Now, user);
 
                 await _context.SaveChangesAsync();
             }
@@ -147,7 +137,7 @@ namespace Biblioteca.Web.Data
             
         }
 
-        private void AddMember(string firstName,string lastName,string phone,DateTime birthdate,bool disable,int membershipId,User user)
+        private void AddMember(string firstName, string lastName, string phone, DateTime birthdate, User user)
         {
             _context.Members.Add(new Member
             {
@@ -155,8 +145,6 @@ namespace Biblioteca.Web.Data
                 LastName = lastName,
                 Phone = phone,
                 BirthDate = birthdate,
-                Disable = disable,
-                MembershipID = membershipId,
                 User = user
 
 
@@ -183,12 +171,8 @@ namespace Biblioteca.Web.Data
                 Author = author,
                 Title = title,
                 BookId = bookId,
-                Availability = availability,
                 ISBN = isbn,
                 Publisher = publisher,
-                ScheduleReturnDate = scheduleReturnDate,
-                ActualReturnDate = actualReturnDate,
-                RentalDuration = rentalDuration,
                 User = user
             });
         }
@@ -204,20 +188,6 @@ namespace Biblioteca.Web.Data
                 User = user
              
             });
-        }
-
-        private void AddMembership(string name, byte signUpFee, byte chargeRateSixMonth, byte chargeRateTwelveMonth,User user)
-        {
-            _context.Memberships.Add(new Membership
-            {
-                Name = name,
-                SignUpFee = signUpFee,
-                ChargeRateSixMonth = chargeRateSixMonth,
-                ChargeRateTwelveMonth = chargeRateTwelveMonth,
-                User = user
-
-            });
-
         }
 
         private void AddGenre(string name, User user)

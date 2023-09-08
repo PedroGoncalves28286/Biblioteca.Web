@@ -15,31 +15,19 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Title { get; set; }
 
-        [Display(Name = "Book ID")]
+        [Display(Name = "Book Id")]
         public int BookId { get; set; }
+
+        [Display(Name = "Selected Date")]
+        public DateTime? SelectedDate { get; set; }
 
         [Display(Name ="Covers")]
         public Guid CoverId { get; set; }
 
-        public string Availability { get; set; }
-
         public string ISBN { get; set; }
 
         public string Publisher { get; set; }
-
-        [Display(Name = "Start date")]
-        public DateTime? StartDate { get; set; }
-
-        [Display(Name = "Return date")]
-        public DateTime? ScheduleReturnDate { get; set; }
-
-        [Display(Name = "Devolution")]
-        public DateTime? ActualReturnDate { get; set; }
-
-        [Display(Name = "Rental duration")]
-        public int RentalDuration { get; set; } 
-
-
+        
         public User User { get; set; }
 
         public string ImageFullPath => CoverId == Guid.Empty

@@ -13,8 +13,6 @@ namespace Biblioteca.Web.Data
 
         public DbSet<Genre> Genres { get; set; }
 
-        public DbSet<Membership> Memberships { get; set; }
-
         public DbSet<Reservation> Reservations { get; set; }
 
         public DbSet<Newsletter> Newsletters{ get; set; }
@@ -22,11 +20,11 @@ namespace Biblioteca.Web.Data
 
         public DbSet<Member> Members { get; set; }
 
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<Lend> Lends { get; set; }
 
-        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<LendDetail> LendDetails { get; set; }
 
-        public DbSet<OrderDetailTemp> OrderDetailsTemp { get; set; }
+        public DbSet<LendDetailTemp> LendsDetailTemp { get; set; }
 
 
         public DataContext(DbContextOptions<DataContext>options ):base(options)

@@ -5,23 +5,24 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Microsoft.WindowsAzure.Storage;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Data
 {
-    public class OrderRepository : GenericRepository<Order> , IOrderRepository
+    public class LendRepository : GenericRepository<Lend> , ILendRepository
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
 
-        public OrderRepository(DataContext context, IUserHelper userHelper) : base(context) 
+        public LendRepository(DataContext context, IUserHelper userHelper) : base(context) 
         {
             _context = context;
             _userHelper = userHelper;
         }
 
-        public async Task AddItemToOrderAsync(AddItemViewModel model, string userName)
+        public async Task AddItemToLendAsync(AddItemViewModel model, string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
@@ -35,30 +36,26 @@ namespace Biblioteca.Web.Data
                 return;
             }
 
-            var orderDetailTemp = await _context.OrderDetailsTemp
+            var lendDetailTemp = await _context.LendsDetailTemp
                 .Where(odt => odt.User == user && odt.Book == book)
                 .FirstOrDefaultAsync();
 
-            if (orderDetailTemp == null)
+            if (lendDetailTemp == null)
             {
-                orderDetailTemp = new OrderDetailTemp
+                lendDetailTemp = new LendDetailTemp
                 {
                     Book = book,
-                    Quantity = model.Quantity,
+                    LendDate = model.LendDate,
                     User = user
                 };
-                _context.OrderDetailsTemp.Add(orderDetailTemp);
+                _context.LendsDetailTemp.Add(lendDetailTemp);
             }
-            else
-            {
-                orderDetailTemp.Quantity += model.Quantity;
-                _context.OrderDetailsTemp.Update(orderDetailTemp);
-            }
+            
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> ConfirmOrderAsync(string userName)
+        public async Task<bool> ConfirmLendAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
@@ -66,60 +63,61 @@ namespace Biblioteca.Web.Data
                 return false;
             }
 
-            var orderTmps = await _context.OrderDetailsTemp
+            var lendTmps = await _context.LendsDetailTemp
                 .Include(o => o.Book)
                 .Where(o => o.User == user)
                 .ToListAsync();
-            if (orderTmps == null || orderTmps.Count == 0)
+
+            if (lendTmps == null || lendTmps.Count == 0)
             {
                 return false;
             }
-            var details = orderTmps.Select(o => new OrderDetail
+
+            var details = lendTmps.Select(o => new LendDetail
             {
-                Price = o.Price,
                 Book = o.Book,
-                Quantity = o.Quantity
+                LendDate = o.LendDate
             }).ToList();
 
-            var order = new Order
+            var lend = new Lend
             { 
-                OrderDate = DateTime.UtcNow,
+                LendDate = DateTime.UtcNow,
                 User = user,
                 Items = details
             };
 
-            await CreateAsync(order);
-            _context.OrderDetailsTemp.RemoveRange(orderTmps);
+            await CreateAsync(lend);
+            _context.LendsDetailTemp.RemoveRange(lendTmps);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task DeleteDetailTempAsync(int id)
         {
-            var orderDetailTemp = await _context.OrderDetailsTemp.FindAsync(id);
+            var orderDetailTemp = await _context.LendsDetailTemp.FindAsync(id);
             if (orderDetailTemp == null)
             {
                 return;
             }
 
-            _context.OrderDetailsTemp.Remove(orderDetailTemp);
+            _context.LendsDetailTemp.Remove(orderDetailTemp);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IQueryable<OrderDetailTemp>> GetDetailTempAsync(string userName)
+        public async Task<IQueryable<LendDetailTemp>> GetDetailTempAsync(string userName)
         {
             var user =await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
             {
                 return null;
             }
-            return _context.OrderDetailsTemp
+            return _context.LendsDetailTemp
                 .Include(b => b.Book)
                 .Where(o => o.User == user)
                 .OrderBy(o => o.Book.Title);
         }
 
-        public async Task<IQueryable<Order>> GetOrderAsync(string userName)
+        public async Task<IQueryable<Lend>> GetLendAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
@@ -129,34 +127,19 @@ namespace Biblioteca.Web.Data
 
             if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
-                return _context.Orders
+                return _context.Lends
                     .Include(o => o.User)
                     .Include(o => o.Items)
                     .ThenInclude(b => b.Book)
-                    .OrderByDescending(o => o.OrderDate);
+                    .OrderByDescending(o => o.LendDate);
             }
 
-            return _context.Orders
+            return _context.Lends
                 .Include(o => o.Items)
                 .ThenInclude(b => b.Book)
                 .Where(o => o.User == user)
-                .OrderByDescending(o => o.OrderDate);
+                .OrderByDescending(o => o.LendDate);
         }
 
-        public async Task ModifyOrderDetailTempQuantityAsync(int id, int quantity)
-        {
-            var orderDetailTemp = await _context.OrderDetailsTemp.FindAsync(id);
-            if (orderDetailTemp == null)
-            {
-                return;
-            }
-
-            orderDetailTemp.Quantity += quantity;
-            if (orderDetailTemp.Quantity > 0)
-            {
-                _context.OrderDetailsTemp.Update(orderDetailTemp);
-                await _context.SaveChangesAsync();
-            }
-        }
     }
 }

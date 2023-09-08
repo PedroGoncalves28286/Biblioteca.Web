@@ -39,13 +39,8 @@ namespace Biblioteca.Web.Helpers
                 Title = model.Title,
                 BookId = model.BookId,
                 CoverId = coverId,
-                Availability = model.Availability,
                 ISBN = model.ISBN,
                 Publisher = model.Publisher,
-                StartDate = model.StartDate,
-                ScheduleReturnDate = model.ScheduleReturnDate,
-                ActualReturnDate = model.ActualReturnDate,
-                RentalDuration = model.RentalDuration,
                 User = model.User
             };
         }
@@ -60,13 +55,8 @@ namespace Biblioteca.Web.Helpers
                 Title = rental.Title,
                 BookId = rental.BookId,
                 CoverId = rental.CoverId,
-                Availability = rental.Availability,
                 ISBN = rental.ISBN,
                 Publisher = rental.Publisher,
-                StartDate = rental.StartDate,
-                ScheduleReturnDate = rental.ScheduleReturnDate,
-                ActualReturnDate = rental.ActualReturnDate,
-                RentalDuration = rental.RentalDuration,
                 User = rental.User
             };
         }

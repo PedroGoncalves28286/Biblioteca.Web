@@ -47,13 +47,7 @@ namespace Biblioteca.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("ActualReturnDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Author")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Availability")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BookId")
@@ -71,13 +65,7 @@ namespace Biblioteca.Web.Migrations
                     b.Property<string>("Publisher")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RentalDuration")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ScheduleReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateTime?>("SelectedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
@@ -109,6 +97,86 @@ namespace Biblioteca.Web.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Lend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Lends");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.LendDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("LendId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("LendId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LendDetails");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.LendDetailTemp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LendDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LendsDetailTemp");
+                });
+
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Member", b =>
                 {
                     b.Property<int>("Id")
@@ -119,17 +187,11 @@ namespace Biblioteca.Web.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Disable")
-                        .HasColumnType("bit");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MembershipID")
-                        .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
@@ -142,35 +204,6 @@ namespace Biblioteca.Web.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Members");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Membership", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte>("ChargeRateSixMonth")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte>("ChargeRateTwelveMonth")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("SignUpFee")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Memberships");
                 });
 
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Newsletter", b =>
@@ -202,85 +235,6 @@ namespace Biblioteca.Web.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Newsletters");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime?>("DeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.OrderDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.OrderDetailTemp", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("OrderDetailsTemp");
                 });
 
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Reservation", b =>
@@ -520,16 +474,58 @@ namespace Biblioteca.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Member", b =>
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Lend", b =>
                 {
+                    b.HasOne("Biblioteca.Web.Data.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId");
+
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Book");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Membership", b =>
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.LendDetail", b =>
+                {
+                    b.HasOne("Biblioteca.Web.Data.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Biblioteca.Web.Data.Entities.Lend", null)
+                        .WithMany("Items")
+                        .HasForeignKey("LendId");
+
+                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.LendDetailTemp", b =>
+                {
+                    b.HasOne("Biblioteca.Web.Data.Entities.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId");
+
+                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Member", b =>
                 {
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()
@@ -543,43 +539,6 @@ namespace Biblioteca.Web.Migrations
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Order", b =>
-                {
-                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.OrderDetail", b =>
-                {
-                    b.HasOne("Biblioteca.Web.Data.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("Biblioteca.Web.Data.Entities.Order", null)
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId");
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.OrderDetailTemp", b =>
-                {
-                    b.HasOne("Biblioteca.Web.Data.Entities.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId");
-
-                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Book");
 
                     b.Navigation("User");
                 });
@@ -644,7 +603,7 @@ namespace Biblioteca.Web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Order", b =>
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Lend", b =>
                 {
                     b.Navigation("Items");
                 });

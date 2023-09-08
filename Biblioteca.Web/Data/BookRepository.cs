@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Data
 {
@@ -34,6 +35,17 @@ namespace Biblioteca.Web.Data
             });
 
             return list;
+        }
+
+        public async Task<Book> GetBookByIdAsync(int bookId)
+        {
+            return await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+        }
+
+        public async Task UpdateBookAsync(Book book)
+        {
+            _context.Entry(book).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

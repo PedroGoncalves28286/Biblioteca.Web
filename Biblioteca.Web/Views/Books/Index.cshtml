@@ -32,25 +32,10 @@
                 @Html.DisplayNameFor(model => model.CoverId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Availability)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.ISBN)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Publisher)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ScheduleReturnDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ActualReturnDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RentalDuration)
             </th>
             <th></th>
         </tr>
@@ -75,25 +60,10 @@
                     <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Availability)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.ISBN)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Publisher)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ScheduleReturnDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ActualReturnDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RentalDuration)
                 </td>
                 <td>
                     @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff")))

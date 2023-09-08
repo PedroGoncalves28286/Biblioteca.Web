@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Biblioteca.Web.Data.Entities.OrderDetailTemp>
+﻿@model IEnumerable<Biblioteca.Web.Data.Entities.LendDetailTemp>
 @{
     ViewData["Title"] = "Create";
 }
@@ -6,18 +6,18 @@
 <h1>Create</h1>
 <p>
     <a asp-action="AddBook" class="btn btn-success">Add Book</a>
-    <a asp-action="ConfirmOrder" class="btn btn-primary" id="btnConfirm">Confirm Order</a>
+    <a asp-action="ConfirmLend" class="btn btn-primary" id="btnConfirm">Confirm Lend</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Book.Title)
-            </th>      
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
             </th>
-           
+            <th>
+                @Html.DisplayNameFor(model => model.LendDate)
+            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -29,11 +29,9 @@
                     @Html.DisplayFor(modelItem => item.Book.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
+                    @Html.DisplayFor(modelItem => item.LendDate)
                 </td>
                 <td id="@item.Id">
-                    <a asp-action="Increase" asp-route-id="@item.Id" class="btn btn-warning"><i class="fa fa-plus"></i></a>
-                    <a asp-action="Decrease" asp-route-id="@item.Id" class="btn btn-info"><i class="fa fa-minus"></i></a>
                     <a asp-action="DeleteItem" asp-route-id="@item.Id" class="btn btn-danger" id="btnDeleteItem"><i class="fa fa-trash"></i></a>
                 </td>
             </tr>
@@ -45,11 +43,11 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Confirm Order</h4>
+                <h4 class="modal-title">Confirm Lend</h4>
                 <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
             </div>
             <div class="modal-body">
-                <p>Do you want to confirm the order?</p>
+                <p>Do you want to confirm the lend?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="btnYesConfirm">Yes</button>
@@ -67,7 +65,7 @@
                 <button type="button" class="close" data-dismiss="modal"><i class="fa fa-window-close"></i></button>
             </div>
             <div class="modal-body">
-                <p>Do you want to delete the book from the order?</p>
+                <p>Do you want to delete delete the book and go back?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="btnYesDelete">Yes</button>
@@ -76,9 +74,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 @section Scripts{
@@ -94,7 +89,7 @@
                 return false;
             });
             $("#btnYesConfirm").click(function () {
-                window.location.href = "/Orders/ConfirmOrder";
+                window.location.href = "/Lends/ConfirmLend";
             });
             $("a[id*=btnDeleteItem]").click(function () {
                 debugger;
@@ -107,10 +102,8 @@
                 return false;
             });
             $("#btnYesDelete").click(function () {
-                window.location.href = "/Orders/DeleteItem/" + id;
+                window.location.href = "/Lends/DeleteItem/" + id;
             });
         });
     </script>
 }
-
-

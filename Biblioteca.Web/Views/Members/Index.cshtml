@@ -28,12 +28,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.BirthDate)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MembershipID)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -52,12 +46,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.BirthDate)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MembershipID)
-            </td>
+            <td></td>
             <td>
                     
                     <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
