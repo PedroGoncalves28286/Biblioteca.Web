@@ -18,5 +18,7 @@ namespace Biblioteca.Web.Data
         Task DeleteDetailTempAsync(int id);
 
         Task<bool> ConfirmLendAsync(string userName);
+
+        Task<Lend> GetByIdWithDetailsAsync(int id);
     }
 }

@@ -141,5 +141,12 @@ namespace Biblioteca.Web.Data
                 .OrderByDescending(o => o.LendDate);
         }
 
+        public async Task<Lend> GetByIdWithDetailsAsync(int id)
+        {
+            // Use Include to load the associated Book entity
+            return await _context.Lends
+                .Include(l => l.Book)
+                .FirstOrDefaultAsync(l => l.Id == id);
+        }
     }
 }

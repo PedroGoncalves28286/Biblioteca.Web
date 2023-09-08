@@ -180,9 +180,20 @@ namespace Biblioteca.Web.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var book = await _bookRepository.GetByIdAsync(id);
-            await _bookRepository.DeleteAsync(book);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _bookRepository.DeleteAsync(book);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException ex)
+            {
+                ViewBag.ErrorTitle = $"{book.Title} is probably being used";
+                ViewBag.ErrorMessage = $"{book.Title} cannot be deleted since there are ongoing lends.</br></br> " +
+                    $"Try deleting the ongoing orders first and come back again ";
+                return View("Error");
+            }
         }
+
         public IActionResult ProductNotFound()
         {
             return View();

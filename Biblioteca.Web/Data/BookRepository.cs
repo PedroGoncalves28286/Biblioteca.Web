@@ -47,5 +47,17 @@ namespace Biblioteca.Web.Data
             _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(Book book)
+        {
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+        }
+
+        public Book GetBookById(int bookId)
+        {
+            // Retrieve the book with the given ID from your data source
+            return _context.Books.FirstOrDefault(b => b.Id == bookId);
+        }
     }
 }

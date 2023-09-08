@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230908003912_AddedLendModel")]
+    [Migration("20230908154716_AddedLendModel")]
     partial class AddedLendModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -137,7 +137,7 @@ namespace Biblioteca.Web.Migrations
                     b.Property<DateTime>("LendDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("LendId")
+                    b.Property<int>("LendId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -499,15 +499,19 @@ namespace Biblioteca.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biblioteca.Web.Data.Entities.Lend", null)
+                    b.HasOne("Biblioteca.Web.Data.Entities.Lend", "Lend")
                         .WithMany("Items")
-                        .HasForeignKey("LendId");
+                        .HasForeignKey("LendId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Book");
+
+                    b.Navigation("Lend");
 
                     b.Navigation("User");
                 });

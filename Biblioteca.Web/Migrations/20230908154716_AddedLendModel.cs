@@ -102,7 +102,7 @@ namespace Biblioteca.Web.Migrations
                     BookId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     LendDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LendId = table.Column<int>(type: "int", nullable: true)
+                    LendId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,7 +124,7 @@ namespace Biblioteca.Web.Migrations
                         column: x => x.LendId,
                         principalTable: "Lends",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

@@ -18,6 +18,11 @@ namespace Biblioteca.Web.Data.Entities
         [Display(Name = "Lend Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         public DateTime LendDate { get; set; }
-        
+
+        public int LendId { get; set; }
+
+        public Lend Lend { get; set; }
+
+
     }
 }

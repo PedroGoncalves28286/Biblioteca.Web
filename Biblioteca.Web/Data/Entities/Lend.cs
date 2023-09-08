@@ -36,9 +36,10 @@ namespace Biblioteca.Web.Data.Entities
                         return firstItem.Book.Title;
                     }
                 }
-                return "No Book"; // or any default value you prefer
+                return "Unavailable"; // or any default value you prefer
             }
         }
+
 
         [Display(Name = "Lend date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}", ApplyFormatInEditMode = false)]

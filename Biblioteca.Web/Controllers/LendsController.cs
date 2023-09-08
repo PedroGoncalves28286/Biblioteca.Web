@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 using Biblioteca.Web.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -15,12 +16,15 @@ namespace Biblioteca.Web.Controllers
     {
         private readonly ILendRepository _lendRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly DataContext _context;
 
         public LendsController(ILendRepository lendRepository,
-            IBookRepository bookRepository)
+            IBookRepository bookRepository,
+            DataContext context)
         {
             _lendRepository = lendRepository;
             _bookRepository = bookRepository;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -79,6 +83,38 @@ namespace Biblioteca.Web.Controllers
             }
             return RedirectToAction("Create");
         }
+
+        // GET: Lends/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var lendToDelete = await _lendRepository.GetByIdWithDetailsAsync(id);
+
+            if (lendToDelete == null)
+            {
+                return NotFound(); // Handle the case where the lend is not found
+            }
+
+            return View(lendToDelete);
+        }
+
+        // POST: Lends/DeleteConfirmed/5
+        [HttpPost, ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var lendToDelete = await _lendRepository.GetByIdWithDetailsAsync(id);
+
+            if (lendToDelete == null)
+            {
+                return NotFound();
+            }
+
+            // Perform the deletion logic here
+            await _lendRepository.DeleteAsync(lendToDelete);
+
+            return RedirectToAction("Index"); // Redirect to the list of lends after deletion
+        }
+
 
     }
 }

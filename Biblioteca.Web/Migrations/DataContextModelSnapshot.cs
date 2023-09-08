@@ -135,7 +135,7 @@ namespace Biblioteca.Web.Migrations
                     b.Property<DateTime>("LendDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("LendId")
+                    b.Property<int>("LendId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -497,15 +497,19 @@ namespace Biblioteca.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biblioteca.Web.Data.Entities.Lend", null)
+                    b.HasOne("Biblioteca.Web.Data.Entities.Lend", "Lend")
                         .WithMany("Items")
-                        .HasForeignKey("LendId");
+                        .HasForeignKey("LendId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Book");
+
+                    b.Navigation("Lend");
 
                     b.Navigation("User");
                 });
