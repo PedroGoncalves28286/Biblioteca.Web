@@ -104,12 +104,11 @@ namespace Biblioteca.Web.Controllers
 
             var model = _converterHelper.ToRentalViewModel(book);
 
+            // Ensure that the "IsAvailable" property in the model matches the book's availability status
+            model.IsAvailable = book.IsAvailable;
 
             return View(model);
         }
-
-
-
 
         // POST: Rentals/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -163,7 +162,6 @@ namespace Biblioteca.Web.Controllers
             }
             return View(model);
         }
-
 
         // GET: Rentals/Delete/5
         [RoleAuthorization("Admin")]
