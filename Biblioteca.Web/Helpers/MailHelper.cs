@@ -15,7 +15,7 @@ namespace Biblioteca.Web.Helpers
             _configuration = configuration;
         }
 
-        public async Task<Response> SendEmail(string to, string subject, string body)
+        public Response SendEmail(string to, string subject, string body)
         {
             var nameFrom = _configuration["Mail:NameFrom"];
             var from = _configuration["Mail:From"];

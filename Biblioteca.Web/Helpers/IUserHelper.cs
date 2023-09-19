@@ -34,5 +34,9 @@ namespace Biblioteca.Web.Helpers
         Task<User> GetUserByIdAsync(string userId);
 
         Task<IdentityResult> DeleteUserAsync(User user);
+
+        Task<string> GeneratePasswordResetTokenAsync(User user);
+
+        Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
     }
 }

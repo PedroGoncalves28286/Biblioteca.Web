@@ -127,21 +127,15 @@ namespace Biblioteca.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Check if the "Reader" role exists
-                    await _userHelper.CheckRoleAsync("Reader");
-
-                    // Add the user to the "Reader" role
-                    await _userHelper.AddUserToRoleAsync(user, "Reader");
-
                     // Generate email confirmation token
                     var emailConfirmationToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
 
                     // Create confirmation link
-                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new
-                    {
-                        userId = user.Id,
-                        token = emailConfirmationToken
-                    }, protocol: HttpContext.Request.Scheme);
+                    //var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                    //{
+                    //    userId = user.Id,
+                    //    token = emailConfirmationToken
+                    //}, protocol: HttpContext.Request.Scheme);
 
                     // Send confirmation email
                     string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
@@ -151,7 +145,7 @@ namespace Biblioteca.Web.Controllers
                         token = myToken
                     }, protocol: HttpContext.Request.Scheme);
 
-                    Response response = await _mailHelper.SendEmail(user.Email, "Email confirmation",
+                    Response response =  _mailHelper.SendEmail(user.Email, "Email confirmation",
                         $"<h1>Email Confirmation</h1>To allow the user, please click in this link: </br></br><a href=\"{tokenLink}\">Confirm Email</a>");
 
                     if (response.IsSuccess)
@@ -228,7 +222,7 @@ namespace Biblioteca.Web.Controllers
                     }, protocol: HttpContext.Request.Scheme);
 
                     // Use the SendEmail method and await its response
-                    var response = await _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                    Response response = _mailHelper.SendEmail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
                         $"To allow the user, " +
                         $"please click in this link: </br></br><a href = \"{tokenLink}\">Confirm Email</a>");
 
@@ -239,7 +233,7 @@ namespace Biblioteca.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "The user couldn't be registered.");
+                        ModelState.AddModelError(string.Empty, "The email couldn't be sent.");
                     }
                 }
             }
@@ -445,5 +439,64 @@ namespace Biblioteca.Web.Controllers
             return View("Delete", user);
         }
 
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The email doesn't correspont to a registered user.");
+                    return View(model);
+                }
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+                var link = this.Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Email, "Libraby Password Reset", $"<h1>Library Password Reset</h1>" +
+                $"To reset the password click in this link:</br></br>" +
+                $"<a href = \"{link}\">Reset Password</a>");
+
+                if (response.IsSuccess)
+                {
+                    this.ViewBag.Message = "The instructions to recover your password has been sent to email.";
+                }
+                return this.View();
+            }
+            return this.View(model);
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+            if (user != null)
+            {
+                var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    this.ViewBag.Message = "Password reset successful.";
+                    return View();
+                }
+                this.ViewBag.Message = "Error while resetting the password.";
+                return View(model);
+            }
+            this.ViewBag.Message = "User not found.";
+            return View(model);
+        }
     }
 }
