@@ -75,7 +75,7 @@ namespace Biblioteca.Web.Controllers
 
                 }
 
-                var book = _converterHelper.ToRental(model, coverId, true);
+                var book = _converterHelper.ToLend(model, coverId, true);
 
                 book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
@@ -102,7 +102,7 @@ namespace Biblioteca.Web.Controllers
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var model = _converterHelper.ToRentalViewModel(book);
+            var model = _converterHelper.ToLendViewModel(book);
 
             // Ensure that the "IsAvailable" property in the model matches the book's availability status
             model.IsAvailable = book.IsAvailable;

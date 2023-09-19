@@ -29,7 +29,7 @@ namespace Biblioteca.Web.Helpers
         }
 
 
-        public Book ToRental(BookViewModel model,Guid coverId, bool isNew)
+        public Book ToLend(BookViewModel model,Guid coverId, bool isNew)
         { 
             return new Book
             {
@@ -45,7 +45,7 @@ namespace Biblioteca.Web.Helpers
             };
         }
 
-        public BookViewModel ToRentalViewModel(Book rental)
+        public BookViewModel ToLendViewModel(Book rental)
         {
             return new BookViewModel
             {
