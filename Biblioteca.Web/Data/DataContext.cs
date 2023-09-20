@@ -26,6 +26,7 @@ namespace Biblioteca.Web.Data
 
         public DbSet<LendDetailTemp> LendsDetailTemp { get; set; }
 
+        public DbSet<Contact> Contacts { get; set; }
 
         public DataContext(DbContextOptions<DataContext>options ):base(options)
         {
