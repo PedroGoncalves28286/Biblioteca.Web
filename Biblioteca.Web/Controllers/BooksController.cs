@@ -26,13 +26,13 @@ namespace Biblioteca.Web.Controllers
             _blobHelper = blobHelper;
         }
 
-        // GET: Rentals
+        // GET: Books
         public IActionResult Index()
         {
             return View(_bookRepository.GetAll().OrderBy(u => u.Borrower));
         }
 
-        // GET: Rentals/Details/5
+        // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,14 +49,14 @@ namespace Biblioteca.Web.Controllers
             return View(book);
         }
 
-        // GET: Rentals/Create
+        // GET: Books/Create
         [RoleAuthorization("Admin", "Staff", "Reader")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Rentals/Create
+        // POST: Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [RoleAuthorization("Admin", "Staff", "Reader")]
@@ -87,7 +87,7 @@ namespace Biblioteca.Web.Controllers
         }
 
 
-        // GET: Rentals/Edit/5
+        // GET: Books/Edit/5
         [RoleAuthorization("Staff", "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -110,7 +110,7 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        // POST: Rentals/Edit/5
+        // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [RoleAuthorization("Staff", "Admin")]
@@ -164,7 +164,7 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-        // GET: Rentals/Delete/5
+        // GET: Books/Delete/5
         [RoleAuthorization("Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -182,7 +182,7 @@ namespace Biblioteca.Web.Controllers
             return View(book);
         }
 
-        // POST: Rentals/Delete/5
+        // POST: Books/Delete/5
         [RoleAuthorization("Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

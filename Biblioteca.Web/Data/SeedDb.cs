@@ -115,10 +115,10 @@ namespace Biblioteca.Web.Data
             if (!_context.Books.Any())
             {
                 // Add a default rental when the "Rentals" collection is empty.
-                AddBook("1000", "Kafka", "Metamorfose", 1, "Available", "9798719003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddBook("1021", "Proust", "Em Busca do Tempo Perdido", 1, "Available", "9798724003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddBook("1000", "VHugo", "Os Miseráveis ", 1, "Available", "9798719033528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
-                AddBook("1000", "VNabokov", "Lolita", 1, "Available", "9798259003528", "bertrand", DateTime.Now, DateTime.Now, 4,user);
+                AddBook("1000", "Kafka", "Metamorfose", "Fiction", 1, true, "9798719003528", "bertrand", user);
+                AddBook("1001", "Proust", "Em Busca do Tempo Perdido", "Adventure", 2, false, "9798724003528", "bertrand", user);
+                AddBook("1002", "VHugo", "Os Miseráveis ", "Novel", 3, true, "9798719033528", "bertrand", user);
+                AddBook("1003", "VNabokov", "Lolita", "Romance", 4, true, "9798259003528", "bertrand", user);
                 await _context.SaveChangesAsync();
             }
 
@@ -165,16 +165,17 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddBook(string borrower, string author, string title, int bookId,
-            string availability, string isbn, string publisher, DateTime scheduleReturnDate,
-            DateTime actualReturnDate, int rentalDuration,User user)
+        private void AddBook(string borrower, string author, string title, string genre, int bookId, bool isAvailable,
+            string isbn, string publisher, User user)
         {
             _context.Books.Add(new Book
             {
                 Borrower = borrower,
                 Author = author,
                 Title = title,
+                Genre = genre,
                 BookId = bookId,
+                IsAvailable = isAvailable,
                 ISBN = isbn,
                 Publisher = publisher,
                 User = user,

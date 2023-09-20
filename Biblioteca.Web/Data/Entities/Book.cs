@@ -17,6 +17,8 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Title { get; set; }
 
+        public string Genre { get; set; }
+
         [Display(Name = "Book Id")]
         public int BookId { get; set; }
 
