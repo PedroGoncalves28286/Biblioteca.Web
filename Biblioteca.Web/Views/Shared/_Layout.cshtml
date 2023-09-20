@@ -21,29 +21,21 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Books </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Books" asp-action="Index">Books</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Reservations" asp-action="Index">Reservations</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Authors" asp-action="Index">Authors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Genres" asp-action="Index">Genres</a>
-                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Memberships" asp-action="Index">Memberships</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Books" asp-action="Index">Books</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Reservations</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Newsletters" asp-action="Index">News</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contacts" asp-action="Contact">Contact Us</a>
                         </li>
                         @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {
@@ -53,7 +45,6 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="" asp-action="">Roles</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Create">Create User</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="UserList">User List</a></li>
                                 </ul>
@@ -92,7 +83,7 @@
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Biblioteca - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - Biblioteca - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> - <a asp-area="" asp-controller="Contacts" asp-action="Contact">Contact Us!</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -8,8 +8,8 @@
     <thead>
         <tr>
             <th>Username</th>
-            <th>Email</th>
-            <th>Roles</th>
+            <th>Full name</th>
+            <th>Role</th>
             <th></th>
         </tr>
     </thead>
@@ -20,7 +20,7 @@
             var roles = userWithRoles.Roles;
             <tr>
                 <td>@user.UserName</td>
-                <td>@user.Email</td>
+                <td>@user.FullName</td>
                 <td>
                     @roles.FirstOrDefault()
                 </td>

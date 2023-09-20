@@ -91,12 +91,14 @@ namespace Biblioteca.Web.Data
             }
             if (!_context.Genres.Any())
             {
-                AddGenre("Ficcion",user);
+                AddGenre("Fiction", user);
+                AddGenre("Adventure", user);
                 AddGenre("Romance",user);
                 AddGenre("History",user);
                 AddGenre("Fantasy",user);
                 AddGenre("Mistery",user);
-                AddGenre("NonFicion",user);
+                AddGenre("NonFiction", user);
+                AddGenre("Novel", user);
 
                 await _context.SaveChangesAsync();
             }
