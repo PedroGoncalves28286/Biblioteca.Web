@@ -31,16 +31,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.CoverId)
             </th>
-            <th>
+         @*   <th>
                 @Html.DisplayNameFor(model => model.ISBN)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Publisher)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsAvailable)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanLimitQuantity)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -62,14 +64,17 @@
                 <td>
                     <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">
                 </td>
-                <td>
+               @* <td>
                     @Html.DisplayFor(modelItem => item.ISBN)
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Publisher)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsAvailable)
+                </td>
+                <td>
+                   @Html.DisplayFor(modelItem => item.LoanLimitQuantity)
                 </td>
                 <td>
                     @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff")))
@@ -83,6 +88,7 @@
                     }
                 </td>
             </tr>
+
         }
     </tbody>
 </table>
