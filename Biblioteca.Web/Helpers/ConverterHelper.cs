@@ -41,7 +41,8 @@ namespace Biblioteca.Web.Helpers
                 CoverId = coverId,
                 ISBN = model.ISBN,
                 Publisher = model.Publisher,
-                User = model.User
+                User = model.User,
+                LoanLimitQuantity = model.LoanLimitQuantity
             };
         }
 
@@ -57,7 +58,8 @@ namespace Biblioteca.Web.Helpers
                 CoverId = rental.CoverId,
                 ISBN = rental.ISBN,
                 Publisher = rental.Publisher,
-                User = rental.User
+                User = rental.User,
+                LoanLimitQuantity = rental.LoanLimitQuantity
             };
         }
     }

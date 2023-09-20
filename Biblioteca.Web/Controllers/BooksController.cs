@@ -139,6 +139,7 @@ namespace Biblioteca.Web.Controllers
                     book.CoverId = coverId;
                     book.Author = model.Author;
                     book.Title = model.Title;
+                    book.LoanLimitQuantity = model.LoanLimitQuantity;
 
                     // Update the availability status based on the checkbox value
                     book.IsAvailable = model.IsAvailable;

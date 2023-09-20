@@ -1,11 +1,13 @@
 ﻿using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
+using Biblioteca.Web.Migrations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
@@ -163,7 +165,9 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddBook(string borrower, string author, string title, int bookId, string availability, string isbn, string publisher, DateTime scheduleReturnDate, DateTime actualReturnDate, int rentalDuration,User user)
+        private void AddBook(string borrower, string author, string title, int bookId,
+            string availability, string isbn, string publisher, DateTime scheduleReturnDate,
+            DateTime actualReturnDate, int rentalDuration,User user)
         {
             _context.Books.Add(new Book
             {
@@ -173,7 +177,8 @@ namespace Biblioteca.Web.Data
                 BookId = bookId,
                 ISBN = isbn,
                 Publisher = publisher,
-                User = user
+                User = user,
+                
             });
         }
 
