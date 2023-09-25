@@ -1,5 +1,6 @@
 ﻿using Biblioteca.Web.Data;
 using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Biblioteca.Web.Controllers
     public class GenresController : Controller
     {
         private readonly IGenreRepository _genreRepository;
+        private readonly IBookRepository _bookRepository;
 
-        public GenresController(IGenreRepository genreRepository)
+        public GenresController(IGenreRepository genreRepository, IBookRepository bookRepository)
         {
             _genreRepository = genreRepository;
+            _bookRepository = bookRepository;
         }
 
         // GET: Genres
@@ -82,13 +85,8 @@ namespace Biblioteca.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Genre genre)
+        public async Task<IActionResult> Edit(int id, Genre genre)
         {
-            if (id != genre.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -137,6 +135,41 @@ namespace Biblioteca.Web.Controllers
             await _genreRepository.DeleteAsync(genre);
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> ViewBooks(string genreName)
+        {
+            if (string.IsNullOrEmpty(genreName))
+            {
+                return NotFound();
+            }
+
+            // Retrieving the genre by name
+            var genre = await _genreRepository.GetGenreByNameAsync(genreName);
+
+            if (genre == null)
+            {
+                return NotFound();
+            }
+
+            // Retrieving the books associated with the genre
+            var books = await _bookRepository.GetBooksByGenreAsync(genreName);
+
+            // Create a view model to pass the genre and its associated books to the view
+            var viewModel = new GenreBooksViewModel
+            {
+                Genre = genre, // Pass the genre entity
+                Books = books.Select(book => new BookViewModel
+                {
+                    // Mapping book properties to BookViewModel properties as needed
+                    Title = book.Title,
+                    Author = book.Author,
+                    // Other properties as needed
+                }).ToList()
+            };
+
+            return View(viewModel);
+        }
+
 
     }
 }

@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genre)
+                @Html.DisplayNameFor(model => model.GenreName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.BookId)
@@ -33,9 +33,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.CoverId)
             </th>
-            @*<th>
+            <th>
                 @Html.DisplayNameFor(model => model.ISBN)
-            </th>*@
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Publisher)
             </th>
@@ -62,7 +62,7 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
+                    @Html.DisplayFor(modelItem => item.GenreName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.BookId)
@@ -70,9 +70,9 @@
                 <td>
                     <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">
                 </td>
-                @*<td>
+                <td>
                     @Html.DisplayFor(modelItem => item.ISBN)
-                </td>*@
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Publisher)
                 </td>

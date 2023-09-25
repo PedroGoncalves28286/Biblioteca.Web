@@ -29,7 +29,7 @@ namespace Biblioteca.Web.Helpers
         }
 
 
-        public Book ToLend(BookViewModel model,Guid coverId, bool isNew)
+        public Book ToBook(BookViewModel model,Guid coverId, bool isNew)
         { 
             return new Book
             {
@@ -46,20 +46,20 @@ namespace Biblioteca.Web.Helpers
             };
         }
 
-        public BookViewModel ToLendViewModel(Book rental)
+        public BookViewModel ToBookViewModel(Book book)
         {
             return new BookViewModel
             {
-                Id = rental.Id,
-                Borrower = rental.Borrower,
-                Author = rental.Author,
-                Title = rental.Title,
-                BookId = rental.BookId,
-                CoverId = rental.CoverId,
-                ISBN = rental.ISBN,
-                Publisher = rental.Publisher,
-                User = rental.User,
-                LoanLimitQuantity = rental.LoanLimitQuantity
+                Id = book.Id,
+                Borrower =book.Borrower,
+                Author = book.Author,
+                Title = book.Title,
+                BookId = book.BookId,
+                CoverId =book.CoverId,
+                ISBN = book.ISBN,
+                Publisher = book.Publisher,
+                User = book.User,
+                LoanLimitQuantity = book.LoanLimitQuantity
             };
         }
     }

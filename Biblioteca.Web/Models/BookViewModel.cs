@@ -15,8 +15,6 @@ namespace Biblioteca.Web.Models
         [Display(Name = "Is Available")]
         public bool IsAvailable { get; set; }
 
-
         
-
     }
 }

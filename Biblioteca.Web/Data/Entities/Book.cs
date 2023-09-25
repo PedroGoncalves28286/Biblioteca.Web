@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace Biblioteca.Web.Data.Entities
 {
-    public class Book : IEntity,IValidatableObject
+    public class Book : IEntity, IValidatableObject
     {
         public int Id { get; set; }
 
@@ -17,7 +17,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Title { get; set; }
 
-        public string Genre { get; set; }
+        public string GenreName { get; set; }
 
         [Display(Name = "Book Id")]
         public int BookId { get; set; }

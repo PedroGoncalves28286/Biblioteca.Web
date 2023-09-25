@@ -11,8 +11,8 @@ namespace Biblioteca.Web.Helpers
         AuthorViewModel ToAuthorViewModel(Author author);
 
 
-        Book ToLend(BookViewModel model,Guid coverId, bool isNew);
+        Book ToBook(BookViewModel model, Guid coverId, bool isNew);
 
-        BookViewModel ToLendViewModel(Book rental);
+        BookViewModel ToBookViewModel(Book book);
     }
 }

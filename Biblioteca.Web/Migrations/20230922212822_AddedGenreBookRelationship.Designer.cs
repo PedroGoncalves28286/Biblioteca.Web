@@ -4,14 +4,16 @@ using Biblioteca.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biblioteca.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230922212822_AddedGenreBookRelationship")]
+    partial class AddedGenreBookRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,12 +136,7 @@ namespace Biblioteca.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Genres");
                 });
@@ -516,15 +513,6 @@ namespace Biblioteca.Web.Migrations
                 });
 
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Book", b =>
-                {
-                    b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Biblioteca.Web.Data.Entities.Genre", b =>
                 {
                     b.HasOne("Biblioteca.Web.Data.Entities.User", "User")
                         .WithMany()

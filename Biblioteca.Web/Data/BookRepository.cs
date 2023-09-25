@@ -59,5 +59,19 @@ namespace Biblioteca.Web.Data
             // Retrieve the book with the given ID from your data source
             return _context.Books.FirstOrDefault(b => b.Id == bookId);
         }
+
+        public async Task<List<Book>> GetBooksByGenreAsync(string genreName)
+        {
+            // Query the database to retrieve books by genre
+            return await _context.Books
+                .Where(b => b.GenreName == genreName)
+                .ToListAsync();
+        }
+
+        public async Task<Book> GetBookByBookIdAsync(int bookId)
+        {
+            // Assuming ISBN is a unique property in your Book entity
+            return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
+        }
     }
 }

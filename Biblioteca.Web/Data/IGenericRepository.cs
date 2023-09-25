@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Biblioteca.Web.Data.Entities;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Data
@@ -8,6 +9,8 @@ namespace Biblioteca.Web.Data
         IQueryable<T> GetAll();
 
         Task<T> GetByIdAsync(int id);
+
+        Task<Book> GetByNameAsync(string name);
 
         Task CreateAsync(T entity);
 

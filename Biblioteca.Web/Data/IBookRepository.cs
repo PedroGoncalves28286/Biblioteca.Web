@@ -19,6 +19,10 @@ namespace Biblioteca.Web.Data
 
         Task DeleteAsync(Book book);
 
+        Task<List<Book>> GetBooksByGenreAsync(string genreName);
+
+        Task<Book> GetBookByBookIdAsync(int bookId);
+
 
     }
 }

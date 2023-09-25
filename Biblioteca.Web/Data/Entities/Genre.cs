@@ -9,8 +9,9 @@ namespace Biblioteca.Web.Data.Entities
 
         [Required]
         [DisplayName("Genre")]
-
         public string Name{ get; set; }
+
+        public User User { get; set; }
 
 
     }

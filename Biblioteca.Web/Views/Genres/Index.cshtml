@@ -37,6 +37,8 @@
                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
                     }
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i>Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="ViewBooks" asp-route-genreName="@item.Name" class="btn">
+                        <i class="fa-solid fa-book-open fa-lg" style="color: #9A8174;"></i> View Books</a>
             </td>
         </tr>
 }

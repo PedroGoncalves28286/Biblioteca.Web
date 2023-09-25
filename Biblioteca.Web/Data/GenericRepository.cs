@@ -26,6 +26,13 @@ namespace Biblioteca.Web.Data
                 .FirstOrDefaultAsync(e => e.Id == id);
         }
 
+        public async Task<Book> GetByNameAsync(string name)
+        {
+            return await _context.Books
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Title == name);
+        }
+
         public async Task CreateAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);

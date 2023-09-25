@@ -1,7 +1,9 @@
 ﻿using Biblioteca.Web.Data;
+using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -15,15 +17,20 @@ namespace Biblioteca.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IConverterHelper _converterHelper;
         private readonly IBlobHelper _blobHelper;
+        private readonly IGenreRepository _genreRepository;
+        private readonly DataContext _context;
 
         public BooksController(IBookRepository bookRepository, IUserHelper userHelper,
             IConverterHelper converterHelper,
-             IBlobHelper blobHelper)
+             IBlobHelper blobHelper, IGenreRepository genreRepository,
+             DataContext context)
         {
             _bookRepository = bookRepository;
             _userHelper = userHelper;
             _converterHelper = converterHelper;
             _blobHelper = blobHelper;
+            _genreRepository = genreRepository;
+            _context = context;
         }
 
         // GET: Books
@@ -53,6 +60,9 @@ namespace Biblioteca.Web.Controllers
         [RoleAuthorization("Admin", "Staff", "Reader")]
         public IActionResult Create()
         {
+            var genres = _genreRepository.GetAll().ToList();
+            ViewBag.Genres = new SelectList(genres, "Name", "Name");
+
             return View();
         }
 
@@ -75,14 +85,27 @@ namespace Biblioteca.Web.Controllers
 
                 }
 
-                var book = _converterHelper.ToLend(model, coverId, true);
+                var book = _converterHelper.ToBook(model, coverId, true);
+
+                var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.BookId);
+                if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
+                {
+                    ModelState.AddModelError("BookId", "A book with the same ISBN already exists.");
+                    // Repopulate the genre dropdown if needed
+                    var genres = _genreRepository.GetAll().ToList();
+                    ViewBag.Genres = new SelectList(genres, "Name", "Name");
+                    return View(model);
+                }
+
+                // Genre name based on the user's selection
+                book.GenreName = model.GenreName;
 
                 book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-
                 await _bookRepository.CreateAsync(book);
 
                 return RedirectToAction(nameof(Index));
             }
+
             return View(model);
         }
 
@@ -102,10 +125,21 @@ namespace Biblioteca.Web.Controllers
                 return new NotFoundViewResult("ProductNotFound");
             }
 
-            var model = _converterHelper.ToLendViewModel(book);
+            var model = _converterHelper.ToBookViewModel(book);
+
+            // Retrieve the book's genre and set it in the model
+            var bookGenre = await _genreRepository.GetGenreByNameAsync(book.GenreName);
+            if (bookGenre != null)
+            {
+                model.GenreName = bookGenre.Name;
+            }
 
             // Ensure that the "IsAvailable" property in the model matches the book's availability status
             model.IsAvailable = book.IsAvailable;
+
+            // Retrieve the list of genres and update ViewBag.Genres
+            var genres = _genreRepository.GetAll().ToList();
+            ViewBag.Genres = new SelectList(genres, "Name", "Name");
 
             return View(model);
         }
@@ -120,6 +154,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 try
                 {
                     Guid coverId = model.CoverId;
@@ -136,9 +171,31 @@ namespace Biblioteca.Web.Controllers
                         return NotFound(); // Handle the case where the book is not found
                     }
 
+                    //if (_context.Books.Any(a => a.BookId.Equals(model.BookId)))
+                    //{
+                    //    ModelState.AddModelError("BookId ", "Book already exists!!");
+                    //}
+
+                    // Check for duplicate ISBN
+                    var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.BookId);
+                    if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
+                    {
+                        ModelState.AddModelError("BookId", "A book with the same Id already exists.");
+                        // Repopulate the genre dropdown if needed
+                        var genres = _genreRepository.GetAll().ToList();
+                        ViewBag.Genres = new SelectList(genres, "Name", "Name");
+                        return View(model);
+                    }
+
+                    // Update genre name based on the user's selection
+                    book.GenreName = model.GenreName;
                     book.CoverId = coverId;
                     book.Author = model.Author;
                     book.Title = model.Title;
+                    book.BookId = model.BookId;
+                    book.Borrower = model.Borrower;
+                    book.ISBN = model.ISBN;
+                    book.Publisher = model.Publisher;
                     book.LoanLimitQuantity = model.LoanLimitQuantity;
 
                     // Update the availability status based on the checkbox value
@@ -150,7 +207,8 @@ namespace Biblioteca.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _bookRepository.ExistAsync(model.Id))
+                    // Check for concurrency exception based on the book's BookId
+                    if (!await _bookRepository.ExistAsync(model.BookId))
                     {
                         return NotFound();
                     }
@@ -161,8 +219,27 @@ namespace Biblioteca.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            // If there are validation errors, repopulate the genre dropdown
+            var genreList = _genreRepository.GetAll().ToList();
+            ViewBag.Genres = new SelectList(genreList, "Name", "Name");
+
+            //// Check if the selected genre already exists
+            //var selectedGenre = await _genreRepository.GetGenreByNameAsync(model.GenreName);
+            //if (selectedGenre == null)
+            //{
+            //    // If the genre doesn't exist, you can choose how to handle it
+            //    // For example, you could create a new genre here or show an error message
+            //    ModelState.AddModelError("GenreName", "The selected genre does not exist.");
+            //    return View(model);
+            //}
+
+            //// Update the book's genre reference to the existing genre
+            //model.GenreId = selectedGenre.Id;
+
             return View(model);
         }
+
 
         // GET: Books/Delete/5
         [RoleAuthorization("Admin")]
@@ -178,6 +255,9 @@ namespace Biblioteca.Web.Controllers
             {
                 return new NotFoundViewResult("ProductNotFound");
             }
+
+            var genres = _genreRepository.GetAll().ToList();
+            ViewBag.Genres = new SelectList(genres, "Name", "Name");
 
             return View(book);
         }
