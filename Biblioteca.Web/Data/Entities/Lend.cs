@@ -12,7 +12,7 @@ namespace Biblioteca.Web.Data.Entities
 
         [Required]
         [Display(Name = "Lend date")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = false)]
         public DateTime LendDate { get; set; }
 
         [Required]
@@ -42,7 +42,27 @@ namespace Biblioteca.Web.Data.Entities
 
 
         [Display(Name = "Lend date")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy HH:mm}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime? LendDateLocal => this.LendDate == null ? null : this.LendDate.ToLocalTime();
+
+
+        [Display(Name = "Devolution date")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        public DateTime DevolutionDate
+        {
+            get
+            {
+                // Calculate the devolution date based on your logic here
+                // For example, add a fixed number of days to the LendDate
+                if (LendDate != null)
+                {
+                    // You can change this logic based on your requirements
+                    return LendDate.AddDays(14); // 14 days after LendDate
+                }
+
+                // Return a default value if LendDate is not set
+                return DateTime.MinValue;
+            }
+        }
     }
 }

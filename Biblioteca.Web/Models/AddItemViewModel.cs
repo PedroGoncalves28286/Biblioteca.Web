@@ -18,6 +18,10 @@ namespace Biblioteca.Web.Models
 
         public IEnumerable<SelectListItem> Books { get; set; }
 
-        
+        [Display(Name = "Devolution Date")]
+        [DataType(DataType.Date)]
+        public DateTime DevolutionDate { get; set; }
+
+
     }
 }

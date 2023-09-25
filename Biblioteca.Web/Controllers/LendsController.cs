@@ -44,8 +44,9 @@ namespace Biblioteca.Web.Controllers
             var model = new AddItemViewModel
             {
                 LendDate = System.DateTime.Now,
-                Books = _bookRepository.GetComboBooks()
+                DevolutionDate = DateTime.Now,       
             };
+            model.Books = _bookRepository.GetComboBooks();
 
             return View(model);
         }
@@ -61,6 +62,9 @@ namespace Biblioteca.Web.Controllers
                 // Set the current date as the LendDate when adding the book
                 model.LendDate = DateTime.Now;
 
+                // Calculate DevolutionDate based on your logic
+                model.DevolutionDate = model.LendDate.AddDays(14); // 14 days after LendDate
+
                 await _lendRepository.AddItemToLendAsync(model, this.User.Identity.Name);
                 return RedirectToAction("Create");
             }
@@ -71,7 +75,7 @@ namespace Biblioteca.Web.Controllers
             // The client-side code will handle displaying the error message.
             return View(model);
         }
-    
+
 
 
         public async Task<IActionResult> DeleteItem(int? id)

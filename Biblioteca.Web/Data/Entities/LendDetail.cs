@@ -23,14 +23,9 @@ namespace Biblioteca.Web.Data.Entities
 
         public Lend Lend { get; set; }
 
-
-       
-
         public int Quantity { get; set; }
 
-
-
-
+        public DateTime DevolutionDate { get; set; }    
 
     }
 }
