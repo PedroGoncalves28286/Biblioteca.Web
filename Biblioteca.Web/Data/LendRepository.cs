@@ -145,7 +145,9 @@ namespace Biblioteca.Web.Data
         {
             // Use Include to load the associated Book entity
             return await _context.Lends
-                .Include(l => l.Book)
+                .Include(l => l.User)
+                .Include(l => l.Items)
+                .ThenInclude(ld => ld.Book)
                 .FirstOrDefaultAsync(l => l.Id == id);
         }
     }

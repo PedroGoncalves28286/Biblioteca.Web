@@ -129,6 +129,15 @@ namespace Biblioteca.Web.Controllers
             return RedirectToAction("Index"); // Redirect to the list of lends after deletion
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var model = await _lendRepository.GetByIdWithDetailsAsync(id.Value);
+            return View(model);
+        }
 
     }
 }
