@@ -1,6 +1,7 @@
 ﻿using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Collections.Generic;
 using System.Data.Odbc;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,5 +21,8 @@ namespace Biblioteca.Web.Data
         Task<bool> ConfirmLendAsync(string userName);
 
         Task<Lend> GetByIdWithDetailsAsync(int id);
+
+        Task<IEnumerable<Lend>> GetLendingHistoryAsync(string userId);
+
     }
 }

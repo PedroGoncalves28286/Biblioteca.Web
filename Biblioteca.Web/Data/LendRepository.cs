@@ -150,5 +150,27 @@ namespace Biblioteca.Web.Data
                 .ThenInclude(ld => ld.Book)
                 .FirstOrDefaultAsync(l => l.Id == id);
         }
+        public async Task<IEnumerable<Lend>> GetLendingHistoryAsync(string userId)
+        {
+            var lendingHistory = await _context.Lends
+                .Include(l => l.Items)
+                .ThenInclude(i => i.Book)
+                .Where(l => l.User.Id == userId)
+                .ToListAsync();
+
+            // Populate the BookTitle, LendDate, and DevolutionDate properties
+            foreach (var lend in lendingHistory)
+            {
+                var firstItem = lend.Items.FirstOrDefault();
+                if (firstItem != null)
+                {
+                    lend.BookTitle = firstItem.Book.Title;
+                    lend.LendDate = lend.LendDate; // Populate based on your data
+                    lend.DevolutionDate = lend.DevolutionDate; // Populate based on your data
+                }
+            }
+
+            return lendingHistory;
+        }
     }
 }

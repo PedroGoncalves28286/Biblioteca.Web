@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Biblioteca.Web.Data.Entities.Lend>
+
+<h2>Lending History</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book Title</th>
+            <th>Lend Date</th>
+            <th>Devolution Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lend in Model)
+        {
+            <tr>
+                <td>@lend.Items.FirstOrDefault()?.Book.Title</td>
+                <td>@lend.LendDate.ToString("dd/MM/yyyy")</td>
+                <td>@lend.DevolutionDate.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

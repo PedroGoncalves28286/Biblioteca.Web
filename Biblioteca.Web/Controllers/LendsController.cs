@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using Biblioteca.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -17,14 +18,16 @@ namespace Biblioteca.Web.Controllers
         private readonly ILendRepository _lendRepository;
         private readonly IBookRepository _bookRepository;
         private readonly DataContext _context;
+        private readonly UserManager<User> _userManager;
 
         public LendsController(ILendRepository lendRepository,
             IBookRepository bookRepository,
-            DataContext context)
+            DataContext context, UserManager<User> userManager)
         {
             _lendRepository = lendRepository;
             _bookRepository = bookRepository;
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
@@ -44,7 +47,7 @@ namespace Biblioteca.Web.Controllers
             var model = new AddItemViewModel
             {
                 LendDate = System.DateTime.Now,
-                DevolutionDate = DateTime.Now,       
+                DevolutionDate = DateTime.Now,
             };
             model.Books = _bookRepository.GetComboBooks();
 
@@ -139,5 +142,22 @@ namespace Biblioteca.Web.Controllers
             return View(model);
         }
 
-    }
+        // GET: Lends/History
+        [Authorize]
+        public async Task<IActionResult> History()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound(); // User not found, return a 404 response
+            }
+
+            // Retrieve the user's lending history, for example, based on their user ID
+            var lendingHistory = await _lendRepository.GetLendingHistoryAsync(user.Id);
+
+            return View(lendingHistory);
+
+        }
+    } 
 }

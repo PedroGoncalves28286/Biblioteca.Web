@@ -4,14 +4,16 @@ using Biblioteca.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Biblioteca.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231004214351_LendHistory")]
+    partial class LendHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,12 +156,6 @@ namespace Biblioteca.Web.Migrations
                     b.Property<int?>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<string>("BookTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DevolutionDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("LendDate")
                         .HasColumnType("datetime2");
 
@@ -234,6 +230,24 @@ namespace Biblioteca.Web.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LendsDetailTemp");
+                });
+
+            modelBuilder.Entity("Biblioteca.Web.Data.Entities.LendHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("LentBooks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReturnedBooks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LendsHistory");
                 });
 
             modelBuilder.Entity("Biblioteca.Web.Data.Entities.Member", b =>

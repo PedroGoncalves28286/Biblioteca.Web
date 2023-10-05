@@ -38,6 +38,10 @@ namespace Biblioteca.Web.Data.Entities
                 }
                 return "Unavailable"; // or any default value you prefer
             }
+            set
+            {
+                // You can add logic to handle the setter here if needed
+            }
         }
 
 
@@ -48,21 +52,13 @@ namespace Biblioteca.Web.Data.Entities
 
         [Display(Name = "Devolution date")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
-        public DateTime DevolutionDate
-        {
-            get
-            {
-                // Calculate the devolution date based on your logic here
-                // For example, add a fixed number of days to the LendDate
-                if (LendDate != null)
-                {
-                    // You can change this logic based on your requirements
-                    return LendDate.AddDays(14); // 14 days after LendDate
-                }
+        public DateTime DevolutionDate { get; set; }
 
-                // Return a default value if LendDate is not set
-                return DateTime.MinValue;
-            }
-        }
+        public Lend()
+        {
+            // Initialize the DevolutionDate property with a default value
+            DevolutionDate = DateTime.Now.AddDays(14); // Default to 14 days from today
+        }
+
     }
 }

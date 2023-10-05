@@ -6,6 +6,7 @@ namespace Biblioteca.Web.Data
 {
     public class DataContext : IdentityDbContext<User>
     {
+        
 
         public DbSet<Book> Books { get; set; }
 
@@ -32,6 +33,11 @@ namespace Biblioteca.Web.Data
         {
             
         }
+        
+    
+
+
+
 
     }
 }
