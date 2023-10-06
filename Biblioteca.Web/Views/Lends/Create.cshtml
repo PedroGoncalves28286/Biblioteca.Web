@@ -6,7 +6,10 @@
 <h1>Create</h1>
 <p>
     <a asp-action="AddBook" class="btn btn-success">Add Book</a>
-    <a asp-action="ConfirmLend" class="btn btn-primary" id="btnConfirm">Confirm Lend</a>
+    @if (Model.Any()) // Check if there are created lends
+    {
+        <a asp-action="ConfirmLend" class="btn btn-primary" id="btnConfirm">Confirm Lend</a>
+    }
 </p>
 <table class="table">
     <thead>

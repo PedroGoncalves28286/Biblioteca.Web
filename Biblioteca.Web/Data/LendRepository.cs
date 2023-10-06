@@ -172,5 +172,16 @@ namespace Biblioteca.Web.Data
 
             return lendingHistory;
         }
+
+        public void Update(Lend lend)
+        {
+            _context.Lends.Update(lend);
+            _context.SaveChanges();
+        }
+
+        public Lend GetById(int id)
+        {
+            return _context.Lends.FirstOrDefault(l => l.Id == id);
+        }
     }
 }

@@ -4,11 +4,23 @@
     ViewData["Title"] = "Index";
 }
 
+@if (TempData["EmailConfirmationMessage"] != null)
+{
+    <div id="tempDataMessage" class="alert alert-success">
+        @TempData["EmailConfirmationMessage"]
+    </div>
+}
+
 <h1>Lends</h1>
 
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Display/Create</a>
+    <a asp-action="Create" class="btn btn-primary">Create</a>
+    @foreach (var item in Model)
+    {
+        <a href="@Url.Action("DownloadConfirmationDocument", "Lends", new { lendId = item.Id })" class="btn btn-primary">
+            <i class="fa-solid fa-download" style="color: #9A8174;"></i> Confirmation</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -49,15 +61,115 @@
                     @Html.DisplayFor(modelItem => item.LendDateLocal)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DevolutionDate)
+                    <span id="extendedDate_@item.Id">@item.DevolutionDate.Date.ToString("dd/MM/yyy")</span>
                 </td>
-                
+                <td>
+                    <form asp-controller="Lends" asp-action="ExtendLend" data-lend-id="@item.Id" data-extension-days="14">
+                        @Html.Hidden("id", item.Id)
+                        <div class="form-group">
+                            <label for="extensionDays">Extend by:</label>
+                            <input type="number" id="extensionDays" name="extensionDays" value="1" min="1" max="14" required style="text-align: center;" />
+
+                        </div>
+                        <button type="button" class="btn btn-success extend-button">Extend</button>
+                    </form>
+                </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
                 </td>
             </tr>
         }
-    </tbody>
 
+    </tbody>
 </table>
+
+<div id="errorDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="errorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="errorLabel">Error</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessageText" class="text-danger"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Function to show the information message in the modal
+            function showInfoModal(message) {
+                $("#errorMessageText").text(message); // Set the message text
+                $("#errorLabel").text("Information"); // Set the modal title to "Information"
+                $("#errorDialog").modal("show"); // Display the modal
+            }
+
+            $(".extend-button").click(function () {
+                var form = $(this).closest("form");
+                var lendId = form.data("lend-id");
+                var extensionDays = form.data("extension-days");
+
+                // Get the current date
+                var currentDate = new Date();
+
+                $.ajax({
+                    type: "POST",
+                    url: form.attr("action"),
+                    data: form.serialize(),
+                    success: function (data) {
+                        if (data.indexOf("Error:") !== -1) {
+                            // Display an information message in the modal
+                            showInfoModal(data.replace("Error:", "").trim());
+                        } else {
+                            // Parse the extended devolution date from the response
+                            var extendedDevolutionDate = new Date(data);
+
+                            // Check if the FirstExtensionDone flag is true
+                            if (currentDate < extendedDevolutionDate || !data.includes("Error")) {
+                                // Update the extended devolution date span with the new value
+                                var extendedDateSpan = $("#extendedDate_" + lendId);
+                                extendedDateSpan.text(data);
+
+                                // Add the green-text class to make it green
+                                extendedDateSpan.addClass("green-text");
+                            } else {
+                                // Show an information message in the modal
+                                showInfoModal("Cannot extend the lend further at this time.");
+                            }
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        // Handle any errors that may occur during the AJAX request
+                        console.error(xhr.responseText);
+                    }
+                });
+
+                return false; // Prevent the form from submitting in the traditional way
+            });
+        });
+        // Function to hide the TempData message after 7 seconds
+        function hideTempDataMessage() {
+            setTimeout(function () {
+                $("#tempDataMessage").fadeOut("slow");
+            }, 7000); // 7000 milliseconds (7 seconds)
+        }
+
+        // Call the function when the page loads
+        $(document).ready(function () {
+            hideTempDataMessage();
+        });
+    </script>
+}

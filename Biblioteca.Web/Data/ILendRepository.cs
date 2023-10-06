@@ -24,5 +24,9 @@ namespace Biblioteca.Web.Data
 
         Task<IEnumerable<Lend>> GetLendingHistoryAsync(string userId);
 
+        void Update(Lend lend);
+
+        Lend GetById(int id);
+
     }
 }
