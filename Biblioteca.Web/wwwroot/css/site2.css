@@ -1,0 +1,82 @@
+﻿/* Reset some default browser styles */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* Add a subtle background pattern */
+body {
+    background-color: #f9f9f9;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
+    background-size: 30px 30px;
+}
+
+/* Header and navigation */
+/*header {
+    background-color: #fff;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}*/
+
+.navbar {
+    background-color: transparent;
+}
+
+    /* Navigation links */
+    .navbar a {
+        color: #333;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+
+        .navbar a:hover {
+            color: #007bff; /* Primary color on hover */
+        }
+
+/* Hero section */
+.jumbotron {
+    background-color: #007bff;
+    color: #fff;
+    padding: 80px 0;
+    text-align: center;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Increase margin-bottom for feature sections */
+.feature-section {
+    background-color: #fff;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 60px; /* Increased margin to create more space */
+}
+
+    /* Section headings */
+    .feature-section h3 {
+        color: #333;
+    }
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 5px 0;
+    text-align: center;
+    clear: both; /* Ensures the footer clears any floated elements */
+    font-size: 12px;
+}
+
+/* Additional custom styles go here */
