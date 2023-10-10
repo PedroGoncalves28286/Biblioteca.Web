@@ -1,0 +1,17 @@
+﻿@model Biblioteca.Web.Data.Entities.Library
+
+<h2>Delete City</h2>
+
+<p>Are you sure you want to delete this city?</p>
+<dl class="dl-horizontal">
+    <dt>Name:</dt>
+    <dd>@Model.Name</dd>
+    <!-- Add other properties as needed -->
+</dl>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+    <div class="form-group">
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-default">Cancel</a>
+    </div>
+</form>
