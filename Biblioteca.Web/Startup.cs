@@ -78,6 +78,8 @@ namespace Biblioteca.Web
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ILendRepository, LendRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/NotAuthorized";

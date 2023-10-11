@@ -290,29 +290,51 @@ namespace Biblioteca.Web.Controllers
 
         private string GenerateConfirmationDocumentContent(Lend lend)
         {
-            // You can generate the HTML content for the confirmation document here
-            // You can use any HTML content generation method you prefer
+            // Define CSS styles
+            string cssStyles = @"
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h1 {
+                        background-color: #007BFF;
+                        color: #FFF;
+                        padding: 10px;
+                        text-align: center;
+                    }
+                    ul {
+                        list-style-type: none;
+                        padding: 0;
+                    }
+                    li {
+                        margin-bottom: 10px;
+                    }
+                    /* Add more styles as needed */
+                </style>
+            ";
 
-            // For example, create an HTML string manually
+            // Generate the HTML content with styles
             string htmlContent = $@"
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Lend Confirmation</title>
-            </head>
-            <body>
-                <h1>Lend Confirmation</h1>
-                <p>Lend Details:</p>
-                <ul>
-                    <li>Borrower: {lend.User.UserName}</li>
-                    <li>Book Title: {lend.BookTitle}</li>
-                    <li>Lend Date: {lend.LendDate}</li>
-                    <li>Devolution Date: {lend.DevolutionDate}</li>
-                    <!-- Add more details as needed -->
-                </ul>
-            </body>
-            </html>
-        ";
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Lend Confirmation</title>
+                    {cssStyles}
+                </head>
+                <body>
+                    <h1>Lend Confirmation</h1>
+                    <p>Lend Details:</p>
+                    <ul>
+                        <li><strong>Borrower:</strong> {lend.User.UserName}</li>
+                        <li><strong>Book Title:</strong> {lend.BookTitle}</li>
+                        <li><strong>Lend Date:</strong> {lend.LendDate}</li>
+                        <li><strong>Devolution Date:</strong> {lend.DevolutionDate}</li>
+                        <!-- Add more details as needed -->
+                    </ul>
+                </body>
+                </html>
+            ";
 
             return htmlContent;
         }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -43,6 +44,22 @@ namespace Biblioteca.Web.Data
             await _userHelper.CheckRoleAsync("Staff");
             await _userHelper.CheckRoleAsync("Reader");
 
+            if (!_context.Users.Any())
+            {
+                var libraries = new List<Library>();
+                libraries.Add(new Library { Name = "Biblioteca Municipal de Lisboa" });
+                libraries.Add(new Library { Name = "Biblioteca Municipal de Oeiras" });
+                libraries.Add(new Library { Name = "Biblioteca Municipal de Cascais" });
+
+                _context.Cities.Add(new City
+                {
+                    Libraries = libraries,
+                    Name = "Lisboa"
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
 
             var user = await _userHelper.GetUserByEmailAsync("pedro@gmail.com");
 
@@ -54,7 +71,10 @@ namespace Biblioteca.Web.Data
                     LastName = "Goncalves",
                     Email = "pedro@gmail.com",
                     UserName = "pedro@gmail.com",
-                    PhoneNumber = "919945526"
+                    PhoneNumber = "919945526",
+                    Address = "Rua da Liberdade",
+                    LibraryId = _context.Cities.FirstOrDefault().Libraries.FirstOrDefault().Id,
+                    Library = _context.Cities.FirstOrDefault().Libraries.FirstOrDefault()
 
                 };
                 var result = await _userHelper.AddUserAsync(user, "123456");

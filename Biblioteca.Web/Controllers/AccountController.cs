@@ -28,6 +28,7 @@ namespace Biblioteca.Web.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly DataContext _dataContext;
         private readonly UserManager<User> _userManager;
+        private readonly ICityRepository _cityRepository;
 
         public AccountController(
             IUserHelper userHelper,
@@ -35,7 +36,8 @@ namespace Biblioteca.Web.Controllers
             IConfiguration configuration,
             RoleManager<IdentityRole> roleManager,
             DataContext dataContext,
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            ICityRepository cityRepository
             )
         {
             _userHelper = userHelper;
@@ -44,6 +46,7 @@ namespace Biblioteca.Web.Controllers
             _roleManager = roleManager;
             _dataContext = dataContext;
             _userManager = userManager;
+            _cityRepository = cityRepository;
         }
 
         public IActionResult Login()
@@ -95,9 +98,15 @@ namespace Biblioteca.Web.Controllers
         [RoleAuthorization("Admin")]
         public IActionResult Create()
         {
+            var model = new CreateUserViewModel
+            {
+                Cities = _cityRepository.GetComboCities(),
+                Libraries = _cityRepository.GetComboLibraries(0)
+            };
+
             var roles = _roleManager.Roles.ToList();
             ViewBag.Roles = new SelectList(roles, "Name", "Name");
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -115,12 +124,18 @@ namespace Biblioteca.Web.Controllers
                     return View(model);
                 }
 
+                var library = await _cityRepository.GetLibraryAsync(model.LibraryId);
+
                 var user = new Data.Entities.User
                 {
                     UserName = model.Username,
                     Email = model.Email,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    Address = model.Address,
+                    PhoneNumber = model.PhoneNumber,
+                    LibraryId = model.LibraryId,
+                    Library = library
                 };
 
                 var result = await _userHelper.CreateUserAsync(user, model.Password, model.SelectedRole);
@@ -182,7 +197,13 @@ namespace Biblioteca.Web.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel
+            {
+                Cities = _cityRepository.GetComboCities(),
+                Libraries = _cityRepository.GetComboLibraries(0)
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -193,12 +214,18 @@ namespace Biblioteca.Web.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(model.Username);
                 if (user == null)
                 {
+                    var library = await _cityRepository.GetLibraryAsync(model.LibraryId);
+
                     user = new User
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Username,
-                        UserName = model.Username
+                        UserName = model.Username,
+                        Address = model.Address,
+                        PhoneNumber = model.PhoneNumber,
+                        LibraryId = model.LibraryId,
+                        Library = library
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -276,24 +303,69 @@ namespace Biblioteca.Web.Controllers
 
         public async Task<IActionResult> ChangeUser()
         {
-
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-
             var model = new ChangeUserViewModel();
 
             if (user != null)
-
             {
-
                 model.FirstName = user.FirstName;
-
                 model.LastName = user.LastName;
+                model.Address = user.Address;
+                model.PhoneNumber = user.PhoneNumber;
 
+                var library = await _cityRepository.GetLibraryAsync(user.LibraryId);
+                if (library != null)
+                {
+                    var city = await _cityRepository.GetCityAsync(library);
+                    if (city != null)
+                    {
+                        model.CityId = city.Id;
+                        // Set the LibraryId and Libraries based on the selected city
+                        model.LibraryId = user.LibraryId;
+                        model.Libraries = _cityRepository.GetComboLibraries(city.Id);
+                    }
+                }
+            }
+
+            model.Cities = _cityRepository.GetComboCities();
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var library = await _cityRepository.GetLibraryAsync(model.LibraryId);
+
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Address = model.Address;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.LibraryId = model.LibraryId;
+                    user.Library = library;
+
+                    var response = await _userHelper.UpdateUserAsync(user);
+
+                    if (response.Succeeded)
+                    {
+                        ViewBag.UserMessage = "User updated!";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                    }
+                }
             }
 
             return View(model);
-
         }
+
         public IActionResult ChangePassword()
         {
             return View();
@@ -498,5 +570,32 @@ namespace Biblioteca.Web.Controllers
             this.ViewBag.Message = "User not found.";
             return View(model);
         }
+
+        [HttpPost]
+        [Route("Account/GetLibrariesAsync")]
+        public async Task<JsonResult> GetLibrariesAsync(int cityId)
+        {
+            try
+            {
+                var city = await _cityRepository.GetCityWithLibrariesAsync(cityId);
+
+                if (city != null)
+                {
+                    var libraries = city.Libraries.OrderBy(l => l.Name);
+                    return Json(libraries);
+                }
+                else
+                {
+                    // Handle the case where the city is not found.
+                    return Json(new { error = "City not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any other exceptions that may occur.
+                return Json(new { error = "An error occurred: " + ex.Message });
+            }
+        }
+
     }
 }

@@ -18,7 +18,6 @@ namespace Biblioteca.Web.Data
 
         public DbSet<Newsletter> Newsletters{ get; set; }
 
-
         public DbSet<Member> Members { get; set; }
 
         public DbSet<Lend> Lends { get; set; }
@@ -28,6 +27,10 @@ namespace Biblioteca.Web.Data
         public DbSet<LendDetailTemp> LendsDetailTemp { get; set; }
 
         public DbSet<Contact> Contacts { get; set; }
+
+        public DbSet<City> Cities { get; set; }
+
+        public DbSet<Library> Libraries { get; set; }
 
         public DataContext(DbContextOptions<DataContext>options ):base(options)
         {

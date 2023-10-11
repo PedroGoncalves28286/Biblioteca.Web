@@ -36,9 +36,33 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Confirm">Confirm</label>
+                <label asp-for="Confirm">Confirm Password</label>
                 <input asp-for="Confirm" type="password" class="form-control" />
                 <span asp-validation-for="Confirm" class="text-warning"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CityId" class="control-label"></label>
+                <select asp-for="CityId" asp-items="Model.Cities" class="form-control"></select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LibraryId" class="control-label"></label>
+                <select asp-for="LibraryId" asp-items="Model.Libraries" class="form-control"></select>
+                <span asp-validation-for="LibraryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Address">Address</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-warning"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PhoneNumber">Phone Number</label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-warning"></span>
             </div>
 
             <div class="form-group">
@@ -59,4 +83,32 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#CityId").change(function () {
+                $("#LibraryId").empty();
+                $.ajax({
+                    url: '@Url.Action("GetLibrariesAsync", "Account")',
+                    type: 'POST',
+                    datatype: 'json',
+                    data: { cityId: $("#CityId").val() },
+                    success: function (libraries) {
+                        debugger;
+                        $("#LibraryId").append('<option value="0">(Select a library...)</option>');
+                        $.each(libraries, function (i, library) {
+                            $("#LibraryId").append('<option value="'
+                                + library.id + '">'
+                                + library.name + '</option>');
+                        });
+                    },
+                    error: function (ex) {
+                        debugger;
+                        alert('Failed to retrieve libraries' + ex);
+                    }
+                });
+                return false;
+            })
+        });
+    </script>
 }

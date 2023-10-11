@@ -1,0 +1,70 @@
+﻿@model Biblioteca.Web.Data.Entities.City
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>City</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn">
+        <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a>
+
+    <a asp-action="AddLibrary" asp-route-id="@Model.Id" class="btn">
+        <i class="fa-solid fa-plus fa-fade fa-1xl" style="color: #9A8174;"></i> Add Library
+    </a>
+
+    <a asp-action="Index" class="btn"><i class="fa fa-chevron-left"></i> Back to List</a>
+</div>
+
+@if (Model.Libraries == null || Model.Libraries.Count == 0)
+{
+    <h5>No libraries added yet</h5>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Libraries.FirstOrDefault().Name)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Libraries.OrderBy(c => c.Name))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td id="@item.Id">
+                        <a asp-action="EditLibrary" asp-route-id="@item.Id" class="btn">
+                            <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a>
+
+                        <a asp-action="DeleteLibrary" asp-route-id="@item.Id" class="btn" id="btnDelete">
+                            <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
