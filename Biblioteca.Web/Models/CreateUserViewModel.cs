@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -53,6 +54,10 @@ namespace Biblioteca.Web.Models
         public int CityId { get; set; }
 
         public IEnumerable<SelectListItem> Cities { get; set; }
+
+        [Display(Name = "Registration Date")]
+        [DataType(DataType.Date)]
+        public DateTime RegistrationDate { get; set; }
 
         [Required(ErrorMessage = "Role is required")]
         [Display(Name = "Role")]

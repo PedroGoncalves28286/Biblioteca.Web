@@ -135,7 +135,8 @@ namespace Biblioteca.Web.Controllers
                     Address = model.Address,
                     PhoneNumber = model.PhoneNumber,
                     LibraryId = model.LibraryId,
-                    Library = library
+                    Library = library,
+                    RegistrationDate = DateTime.Now
                 };
 
                 var result = await _userHelper.CreateUserAsync(user, model.Password, model.SelectedRole);
@@ -225,7 +226,8 @@ namespace Biblioteca.Web.Controllers
                         Address = model.Address,
                         PhoneNumber = model.PhoneNumber,
                         LibraryId = model.LibraryId,
-                        Library = library
+                        Library = library,
+                        RegistrationDate = DateTime.Now
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -312,6 +314,7 @@ namespace Biblioteca.Web.Controllers
                 model.LastName = user.LastName;
                 model.Address = user.Address;
                 model.PhoneNumber = user.PhoneNumber;
+                model.RegistrationDate = user.RegistrationDate;
 
                 var library = await _cityRepository.GetLibraryAsync(user.LibraryId);
                 if (library != null)
@@ -596,6 +599,19 @@ namespace Biblioteca.Web.Controllers
                 return Json(new { error = "An error occurred: " + ex.Message });
             }
         }
+
+        private async Task<DateTime?> GetRegistrationDate(string username)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(username);
+
+            if (user != null)
+            {
+                return user.RegistrationDate;
+            }
+
+            return null;
+        }
+
 
     }
 }

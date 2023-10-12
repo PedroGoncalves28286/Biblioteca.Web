@@ -74,9 +74,10 @@ namespace Biblioteca.Web.Data
                     PhoneNumber = "919945526",
                     Address = "Rua da Liberdade",
                     LibraryId = _context.Cities.FirstOrDefault().Libraries.FirstOrDefault().Id,
-                    Library = _context.Cities.FirstOrDefault().Libraries.FirstOrDefault()
-
+                    Library = _context.Cities.FirstOrDefault().Libraries.FirstOrDefault(),
+                    RegistrationDate = DateTime.Now
                 };
+
                 var result = await _userHelper.AddUserAsync(user, "123456");
                 if (result != IdentityResult.Success)
                 {

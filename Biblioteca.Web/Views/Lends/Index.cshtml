@@ -15,12 +15,7 @@
 
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create</a>
-    @foreach (var item in Model)
-    {
-        <a href="@Url.Action("DownloadConfirmationDocument", "Lends", new { lendId = item.Id })" class="btn btn-primary">
-            <i class="fa-solid fa-download" style="color: #9A8174;"></i> Confirmation</a>
-    }
+    <a asp-action="Create" class="btn btn-primary">Create</a>   
 </p>
 <table class="table">
     <thead>
@@ -45,27 +40,29 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var lendItem in Model)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => lendItem.Id)
                 </td>
                 @if (this.User.IsInRole("Admin"))
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.User.FullName)
+                        @Html.DisplayFor(modelItem => lendItem.User.FullName)<br /><br />
+                        <a href="@Url.Action("DownloadConfirmationDocument", "Lends", new { lendId = lendItem.Id })" class="btn btn-primary">
+                            <i class="fa-solid fa-download" style="color: #9A8174;"></i> Confirmation</a>
                     </td>
                 }
                 <td>
-                    @Html.DisplayFor(modelItem => item.LendDateLocal)
+                    @Html.DisplayFor(modelItem => lendItem.LendDateLocal)
                 </td>
                 <td>
-                    <span id="extendedDate_@item.Id">@item.DevolutionDate.Date.ToString("dd/MM/yyy")</span>
+                    <span id="extendedDate_@lendItem.Id">@lendItem.DevolutionDate.Date.ToString("dd/MM/yyyy")</span>
                 </td>
                 <td>
-                    <form asp-controller="Lends" asp-action="ExtendLend" data-lend-id="@item.Id" data-extension-days="14">
-                        @Html.Hidden("id", item.Id)
+                    <form asp-controller="Lends" asp-action="ExtendLend" data-lend-id="@lendItem.Id" data-extension-days="14">
+                        @Html.Hidden("id", lendItem.Id)
                         <div class="form-group">
                             <label for="extensionDays">Extend by:</label>
                             <input type="number" id="extensionDays" name="extensionDays" value="1" min="1" max="14" required style="text-align: center;" />
@@ -75,8 +72,8 @@
                     </form>
                 </td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Delete" asp-route-id="@lendItem.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
+                    <a asp-action="Details" asp-route-id="@lendItem.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
                 </td>
             </tr>
         }
