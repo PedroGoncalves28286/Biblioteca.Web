@@ -73,5 +73,6 @@ namespace Biblioteca.Web.Data
             // Assuming ISBN is a unique property in your Book entity
             return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
         }
+
     }
 }

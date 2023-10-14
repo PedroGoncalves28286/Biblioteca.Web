@@ -2,10 +2,12 @@
 using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,9 +36,10 @@ namespace Biblioteca.Web.Controllers
         }
 
         // GET: Books
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            return View(_bookRepository.GetAll().OrderBy(u => u.Borrower));
+            return View(_context.Books.Where(x => x.Title.Contains(search) || x.Author.Contains(search) || x.GenreName.Contains(search)
+            || x.ISBN.Contains(search) || x.Publisher.Contains(search) || x.BookId.ToString().Contains(search) || search == null).ToList());
         }
 
         // GET: Books/Details/5

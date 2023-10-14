@@ -52,10 +52,7 @@ namespace Biblioteca.Web.Data.Entities
             }
         }
 
-
-
-
-    public string ImageFullPath => CoverId == Guid.Empty
+        public string ImageFullPath => CoverId == Guid.Empty
             ? $"https://booksonline.azurewebsites.net/images/no_image.png"
             : $"https://bibliotecaarmazenamento.blob.core.windows.net/covers/{CoverId}";
 
