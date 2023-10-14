@@ -199,10 +199,10 @@ namespace Biblioteca.Web.Controllers
                     book.Borrower = model.Borrower;
                     book.ISBN = model.ISBN;
                     book.Publisher = model.Publisher;
-                    book.LoanLimitQuantity = model.LoanLimitQuantity;
+                    book.AvailableCopies = model.AvailableCopies;
 
                     // Update the availability status based on the checkbox value
-                    book.IsAvailable = model.IsAvailable;
+                    //book.IsAvailable = model.IsAvailable;
 
                     book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 

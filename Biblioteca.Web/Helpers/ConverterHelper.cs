@@ -42,7 +42,7 @@ namespace Biblioteca.Web.Helpers
                 ISBN = model.ISBN,
                 Publisher = model.Publisher,
                 User = model.User,
-                LoanLimitQuantity = model.LoanLimitQuantity
+                AvailableCopies = model.AvailableCopies
             };
         }
 
@@ -59,7 +59,7 @@ namespace Biblioteca.Web.Helpers
                 ISBN = book.ISBN,
                 Publisher = book.Publisher,
                 User = book.User,
-                LoanLimitQuantity = book.LoanLimitQuantity
+                AvailableCopies = book.AvailableCopies
             };
         }
     }

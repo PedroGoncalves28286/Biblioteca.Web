@@ -9,6 +9,8 @@ namespace Biblioteca.Web.Data.Entities
 {
     public class Book : IEntity, IValidatableObject
     {
+        private int availableCopies;
+
         public int Id { get; set; }
 
         public string Borrower { get; set; }
@@ -39,19 +41,28 @@ namespace Biblioteca.Web.Data.Entities
 
         public IEnumerable<LendDetail> Items { get; set; }
 
-        [Required]
-        //[MaxLength(20)]
-       
-        public int LoanLimitQuantity { get;set; }
-
-        public IEnumerable <ValidationResult> Validate(ValidationContext validationContext)
+        public int AvailableCopies
         {
-            if(LoanLimitQuantity < 1 || LoanLimitQuantity > 20)
+            get
             {
-                yield return new ValidationResult("Max quatity must be between 1 and 20 " ,new[] { nameof(LoanLimitQuantity)});
+                return availableCopies;
+            }
+            set
+            {
+                availableCopies = value;
+
+                // Update the IsAvailable property based on the availableCopies value
+                IsAvailable = availableCopies >= 1;
             }
         }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (availableCopies < 1)
+            {
+                yield return new ValidationResult("The book is currently unavailable.", new[] { nameof(AvailableCopies) });
+            }
+        }
         public string ImageFullPath => CoverId == Guid.Empty
             ? $"https://booksonline.azurewebsites.net/images/no_image.png"
             : $"https://bibliotecaarmazenamento.blob.core.windows.net/covers/{CoverId}";

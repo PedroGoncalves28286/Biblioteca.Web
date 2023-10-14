@@ -42,15 +42,15 @@
     <span asp-validation-for="Publisher" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="LoanLimitQuantity" class="control-label"></label>
-    <input asp-for="LoanLimitQuantity" class="form-control" />
-    <span asp-validation-for="LoanLimitQuantity" class="text-danger"></span>
+    <label asp-for="AvailableCopies" class="control-label">Available Copies</label>
+    <input asp-for="AvailableCopies" class="form-control" />
+    <span asp-validation-for="AvailableCopies" class="text-danger"></span>
 </div>
-<div class="form-group form-check">
+@*<div class="form-group form-check">
     <label class="form-check-label">
         <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
     </label>
-</div>
+</div>*@
 
 
 

@@ -200,7 +200,7 @@ namespace Biblioteca.Web.Data
                 Title = title,
                 GenreName = genre.Name,
                 BookId = bookId,
-                IsAvailable = isAvailable,
+                //IsAvailable = isAvailable,
                 ISBN = isbn,
                 Publisher = publisher,
                 User = user,
