@@ -67,7 +67,10 @@ namespace Biblioteca.Web.Data.Entities
             ? $"https://booksonline.azurewebsites.net/images/no_image.png"
             : $"https://bibliotecaarmazenamento.blob.core.windows.net/covers/{CoverId}";
 
+        public Guid PdfId { get; set; } // Add the PdfId property
 
-       
+        public string PdfFilePath { get; set; }
+
+
     }
 }

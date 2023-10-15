@@ -1,13 +1,13 @@
 ﻿using Biblioteca.Web.Data;
-using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,11 +21,15 @@ namespace Biblioteca.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IGenreRepository _genreRepository;
         private readonly DataContext _context;
+        private readonly IPDFBlobHelper _pdfBlobHelper;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
         public BooksController(IBookRepository bookRepository, IUserHelper userHelper,
             IConverterHelper converterHelper,
              IBlobHelper blobHelper, IGenreRepository genreRepository,
-             DataContext context)
+             DataContext context,
+             IPDFBlobHelper pdfBlobHelper,
+             IWebHostEnvironment hostEnvironment)
         {
             _bookRepository = bookRepository;
             _userHelper = userHelper;
@@ -33,6 +37,8 @@ namespace Biblioteca.Web.Controllers
             _blobHelper = blobHelper;
             _genreRepository = genreRepository;
             _context = context;
+            _pdfBlobHelper = pdfBlobHelper;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Books
@@ -79,6 +85,16 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                if (model.PdfFile != null && model.PdfFile.Length > 0)
+                {
+                    // Replace "pdfs" with the appropriate container name for PDF files
+                    Guid pdfId = await _pdfBlobHelper.UploadPDFBlobAsync(model.PdfFile, "books");
+
+                    // Save the PDF file's ID or other relevant information to your book entity
+                    model.PdfId = pdfId;
+                }
+
                 Guid coverId = Guid.Empty;
 
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
@@ -157,7 +173,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 try
                 {
                     Guid coverId = model.CoverId;
@@ -200,6 +216,13 @@ namespace Biblioteca.Web.Controllers
                     book.ISBN = model.ISBN;
                     book.Publisher = model.Publisher;
                     book.AvailableCopies = model.AvailableCopies;
+
+                    // Check if a new PDF file is provided and update it
+                    if (model.PdfFile != null && model.PdfFile.Length > 0)
+                    {
+                        Guid pdfId = await _pdfBlobHelper.UploadPDFBlobAsync(model.PdfFile, "books");
+                        book.PdfId = pdfId;
+                    }
 
                     // Update the availability status based on the checkbox value
                     //book.IsAvailable = model.IsAvailable;
@@ -297,5 +320,35 @@ namespace Biblioteca.Web.Controllers
 
             return Json(new { available });
         }
+
+        [HttpGet]
+        public IActionResult ReadBook(Guid pdfId)
+        {
+            string pdfFilePath = GetPdfFilePath(pdfId);
+
+            if (pdfFilePath != null)
+            {
+                return PhysicalFile(pdfFilePath, "application/pdf");
+            }
+
+            // Handle the case where the PDF is not found or an error occurs
+            return NotFound(); // You can customize this based on your error handling strategy
+        }
+
+        private string GetPdfFilePath(Guid pdfId)
+        {
+            // Construct the file path by combining the wwwroot path with the pdfId
+            string wwwrootPath = _hostEnvironment.WebRootPath;
+            string pdfFilePath = Path.Combine(wwwrootPath, "books", pdfId + ".pdf");
+
+            if (System.IO.File.Exists(pdfFilePath))
+            {
+                return pdfFilePath;
+            }
+
+            return null; // Handle the case where the PDF is not found
+        }
+
+
     }
 }

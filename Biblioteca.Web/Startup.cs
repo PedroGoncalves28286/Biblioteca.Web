@@ -66,11 +66,16 @@ namespace Biblioteca.Web
             });
 
             services.AddControllersWithViews();
+
             services.AddTransient<SeedDb>();
+
             services.AddScoped<IUserHelper, UserHelper >();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IBlobHelper, BlobHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<IPDFBlobHelper, PDFBlobHelper>();
+
+
             services.AddScoped<IAuthorRepository, AuthorRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
