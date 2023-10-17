@@ -1,5 +1,4 @@
 ﻿using Biblioteca.Web.Data;
-using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -187,7 +186,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 try
                 {
                     Guid coverId = model.CoverId;
@@ -229,6 +228,13 @@ namespace Biblioteca.Web.Controllers
                     book.ISBN = model.ISBN;
                     book.Publisher = model.Publisher;
                     book.AvailableCopies = model.AvailableCopies;
+
+                    // Check if a new PDF file is provided and update it
+                    if (model.PdfFile != null && model.PdfFile.Length > 0)
+                    {
+                        Guid pdfId = await _pdfBlobHelper.UploadPDFBlobAsync(model.PdfFile, "books");
+                        book.PdfId = pdfId;
+                    }
 
                     // Update the availability status based on the checkbox value
                     //book.IsAvailable = model.IsAvailable;
