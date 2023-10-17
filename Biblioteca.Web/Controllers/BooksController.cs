@@ -229,13 +229,7 @@ namespace Biblioteca.Web.Controllers
                     book.Publisher = model.Publisher;
                     book.AvailableCopies = model.AvailableCopies;
 
-                    // Check if a new PDF file is provided and update it
-                    if (model.PdfFile != null && model.PdfFile.Length > 0)
-                    {
-                        Guid pdfId = await _pdfBlobHelper.UploadPDFBlobAsync(model.PdfFile, "books");
-                        book.PdfId = pdfId;
-                    }
-
+                    
                     // Update the availability status based on the checkbox value
                     //book.IsAvailable = model.IsAvailable;
 
