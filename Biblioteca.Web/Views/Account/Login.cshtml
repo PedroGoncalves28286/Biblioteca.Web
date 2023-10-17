@@ -4,7 +4,7 @@
 }
 
 <h2>Login</h2>
-<div class="row>">
+<div class="row">
     <div class="col-md-4 offset-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly"></div>
@@ -18,33 +18,23 @@
                 <input asp-for="Password" type="password" class="form-control" />
                 <span asp-validation-for="Password" class="text-warning"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group d-flex justify-content-between align-items-center">
                 <div class="form-check">
                     <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
                     <label asp-for="RememberMe" class="form-check-label">Remember Me?</label>
                 </div>
-                <span asp-validation-for="RememberMe" class="text-warning"></span>
+                <div>
+                    <a asp-action="RecoverPassword" class="btn btn-link position link-color">Forgot Password?</a>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Login" class="btn btn-success" />
                 <a asp-action="Register" class="btn btn-primary">Register New User</a>
-                <a asp-action="RecoverPassword" class="btn btn-primary">Forgot Password?</a>
             </div>
-
-
         </form>
-
     </div>
-
-</div>
-
-
-
-@section Scripts {
-
-    @{
-
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
     }
-
-}
