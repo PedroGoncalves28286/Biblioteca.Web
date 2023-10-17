@@ -426,3 +426,7 @@ a-forbidden {
         transform: scale(.98)
     }
 }
+css
+.link {
+    text-align: right;
+}

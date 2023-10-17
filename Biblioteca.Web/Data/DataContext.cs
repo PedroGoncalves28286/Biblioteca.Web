@@ -1,4 +1,5 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,11 +37,6 @@ namespace Biblioteca.Web.Data
         {
             
         }
-        
-    
-
-
-
 
     }
 }

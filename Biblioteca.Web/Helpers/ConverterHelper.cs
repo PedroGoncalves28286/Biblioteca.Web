@@ -37,12 +37,11 @@ namespace Biblioteca.Web.Helpers
                 Borrower = model.Borrower,
                 Author = model.Author,
                 Title = model.Title,
-                BookId = model.BookId,
                 CoverId = coverId,
                 ISBN = model.ISBN,
                 Publisher = model.Publisher,
                 User = model.User,
-                LoanLimitQuantity = model.LoanLimitQuantity
+                AvailableCopies = model.AvailableCopies
             };
         }
 
@@ -54,12 +53,11 @@ namespace Biblioteca.Web.Helpers
                 Borrower =book.Borrower,
                 Author = book.Author,
                 Title = book.Title,
-                BookId = book.BookId,
                 CoverId =book.CoverId,
                 ISBN = book.ISBN,
                 Publisher = book.Publisher,
                 User = book.User,
-                LoanLimitQuantity = book.LoanLimitQuantity
+                AvailableCopies = book.AvailableCopies
             };
         }
     }

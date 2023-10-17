@@ -1,4 +1,5 @@
 ﻿using Biblioteca.Web.Data.Entities;
+using Biblioteca.Web.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -71,7 +72,30 @@ namespace Biblioteca.Web.Data
         public async Task<Book> GetBookByBookIdAsync(int bookId)
         {
             // Assuming ISBN is a unique property in your Book entity
-            return await _context.Books.FirstOrDefaultAsync(b => b.BookId == bookId);
+            return await _context.Books.FirstOrDefaultAsync(b => b.Id == bookId);
         }
+
+        public async Task<int> Create(BookViewModel model)
+        {
+            var newBook = new Book()
+            {
+                BookPdfUrl = model.BookPdfUrl
+            };
+
+            await _context.AddAsync(newBook);
+            await _context.SaveChangesAsync();
+
+            return newBook.Id;
+        }
+
+        public async Task<BookViewModel> GetTheBookById(int id)
+        {
+            return await _context.Books.Where(x => x.Id == id)
+                .Select(book => new BookViewModel()
+                {
+                    BookPdfUrl = book.BookPdfUrl
+                }).FirstOrDefaultAsync();
+        }
+
     }
 }

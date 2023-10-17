@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -23,17 +25,20 @@ namespace Biblioteca.Web.Controllers
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IMailHelper _mailHelper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public LendsController(ILendRepository lendRepository,
             IBookRepository bookRepository,
             DataContext context, UserManager<User> userManager,
-            IMailHelper mailHelper)
+            IMailHelper mailHelper,
+            IWebHostEnvironment webHostEnvironment)
         {
             _lendRepository = lendRepository;
             _bookRepository = bookRepository;
             _context = context;
             _userManager = userManager;
             _mailHelper = mailHelper;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -74,7 +79,27 @@ namespace Biblioteca.Web.Controllers
                 // Calculate DevolutionDate based on your logic
                 model.DevolutionDate = model.LendDate.AddDays(14); // 14 days after LendDate
 
-                await _lendRepository.AddItemToLendAsync(model, this.User.Identity.Name);
+                // Check if there are available copies
+                if (selectedBook.AvailableCopies > 0)
+                {
+                    // Proceed with the lend
+                    await _lendRepository.AddItemToLendAsync(model, this.User.Identity.Name);
+
+                    // Decrease available copies by one
+                    selectedBook.AvailableCopies--;
+
+                    // Update IsAvailable property
+                    selectedBook.IsAvailable = selectedBook.AvailableCopies > 0;
+                }
+                else
+                {
+                    // Handle the case where there are no available copies
+                    ModelState.AddModelError(string.Empty, "No available copies of the selected book.");
+                }
+
+                // Update the book in the repository
+                await _bookRepository.UpdateBookAsync(selectedBook);
+
                 return RedirectToAction("Create");
             }
 
@@ -363,5 +388,5 @@ namespace Biblioteca.Web.Controllers
             // Return the document as a downloadable file
             return File(documentBytes, "text/html", fileName);
         }
-    } 
+    }
 }

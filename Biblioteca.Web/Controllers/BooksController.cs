@@ -1,12 +1,17 @@
 ﻿using Biblioteca.Web.Data;
-using Biblioteca.Web.Data.Entities;
 using Biblioteca.Web.Helpers;
 using Biblioteca.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Biblioteca.Web.Controllers
@@ -19,11 +24,14 @@ namespace Biblioteca.Web.Controllers
         private readonly IBlobHelper _blobHelper;
         private readonly IGenreRepository _genreRepository;
         private readonly DataContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILendRepository _lendRepository;
 
         public BooksController(IBookRepository bookRepository, IUserHelper userHelper,
             IConverterHelper converterHelper,
              IBlobHelper blobHelper, IGenreRepository genreRepository,
-             DataContext context)
+             DataContext context, IWebHostEnvironment webHostEnvironment,
+             ILendRepository lendRepository)
         {
             _bookRepository = bookRepository;
             _userHelper = userHelper;
@@ -31,12 +39,15 @@ namespace Biblioteca.Web.Controllers
             _blobHelper = blobHelper;
             _genreRepository = genreRepository;
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _lendRepository = lendRepository;
         }
 
         // GET: Books
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            return View(_bookRepository.GetAll().OrderBy(u => u.Borrower));
+            return View(_context.Books.Where(x => x.Title.Contains(search) || x.Author.Contains(search) || x.GenreName.Contains(search)
+            || x.ISBN.Contains(search) || x.Publisher.Contains(search) || search == null).ToList());
         }
 
         // GET: Books/Details/5
@@ -76,37 +87,58 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Guid coverId = Guid.Empty;
-
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                if (model.BookPdf != null)
                 {
+                    string folder = "books/pdf";
+                    string pdfUrl = await UploadFile(folder, model.BookPdf); // Get the URL of the uploaded PDF
 
-                    coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
+                    Guid coverId = Guid.Empty;
 
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        coverId = await _blobHelper.UploadBlobAsync(model.ImageFile, "covers");
+                    }
+
+                    var book = _converterHelper.ToBook(model, coverId, true);
+
+                    var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.Id);
+                    if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
+                    {
+                        ModelState.AddModelError("BookId", "A book with the same ISBN already exists.");
+                        // Repopulate the genre dropdown if needed
+                        var genres = _genreRepository.GetAll().ToList();
+                        ViewBag.Genres = new SelectList(genres, "Name", "Name");
+                        return View(model);
+                    }
+
+                    // Genre name based on the user's selection
+                    book.GenreName = model.GenreName;
+
+                    // Set the PDF URL property of the book
+                    book.BookPdfUrl = pdfUrl;
+
+                    book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _bookRepository.CreateAsync(book);
+
+                    return RedirectToAction(nameof(Index));
                 }
 
-                var book = _converterHelper.ToBook(model, coverId, true);
-
-                var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.BookId);
-                if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
-                {
-                    ModelState.AddModelError("BookId", "A book with the same ISBN already exists.");
-                    // Repopulate the genre dropdown if needed
-                    var genres = _genreRepository.GetAll().ToList();
-                    ViewBag.Genres = new SelectList(genres, "Name", "Name");
-                    return View(model);
-                }
-
-                // Genre name based on the user's selection
-                book.GenreName = model.GenreName;
-
-                book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                await _bookRepository.CreateAsync(book);
-
-                return RedirectToAction(nameof(Index));
+                return View(model);
             }
 
             return View(model);
+        }
+
+
+        private async Task<string> UploadFile(string folderPath, IFormFile file)
+        {
+            folderPath += Guid.NewGuid().ToString() + "_" + file.FileName;
+
+            string serverFolder =  Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
+
+            await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+
+            return "/" + folderPath;
         }
 
 
@@ -154,7 +186,7 @@ namespace Biblioteca.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+
                 try
                 {
                     Guid coverId = model.CoverId;
@@ -177,7 +209,7 @@ namespace Biblioteca.Web.Controllers
                     //}
 
                     // Check for duplicate ISBN
-                    var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.BookId);
+                    var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.Id);
                     if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
                     {
                         ModelState.AddModelError("BookId", "A book with the same Id already exists.");
@@ -192,14 +224,14 @@ namespace Biblioteca.Web.Controllers
                     book.CoverId = coverId;
                     book.Author = model.Author;
                     book.Title = model.Title;
-                    book.BookId = model.BookId;
                     book.Borrower = model.Borrower;
                     book.ISBN = model.ISBN;
                     book.Publisher = model.Publisher;
-                    book.LoanLimitQuantity = model.LoanLimitQuantity;
+                    book.AvailableCopies = model.AvailableCopies;
 
+                    
                     // Update the availability status based on the checkbox value
-                    book.IsAvailable = model.IsAvailable;
+                    //book.IsAvailable = model.IsAvailable;
 
                     book.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
@@ -208,7 +240,7 @@ namespace Biblioteca.Web.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     // Check for concurrency exception based on the book's BookId
-                    if (!await _bookRepository.ExistAsync(model.BookId))
+                    if (!await _bookRepository.ExistAsync(model.Id))
                     {
                         return NotFound();
                     }
@@ -293,6 +325,19 @@ namespace Biblioteca.Web.Controllers
             var available = book != null && book.IsAvailable;
 
             return Json(new { available });
+        }
+
+        public async Task<IActionResult> ReadBook(int lendId)
+        {
+            var lend = await _lendRepository.GetLendByIdAsync(lendId);
+
+            if (lend == null)
+            {
+                return NotFound(); // Handle the case where the lend is not found.
+            }
+
+            // Redirect the user to the book details page with the lend's book ID
+            return RedirectToAction("Details", "Books", new { id = lend.Book.Id });
         }
     }
 }

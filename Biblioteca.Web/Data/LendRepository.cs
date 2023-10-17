@@ -183,5 +183,46 @@ namespace Biblioteca.Web.Data
         {
             return _context.Lends.FirstOrDefault(l => l.Id == id);
         }
+
+        public async Task<bool> UserHasLentBookAsync(string userName, int bookId)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+
+            return await _context.Lends
+                .AnyAsync(l => l.User == user && l.Items.Any(i => i.Book.Id == bookId));
+        }
+
+        public int? GetBookIdByLendId(int lendId)
+        {
+            // Retrieve the lend with the given ID, including the associated Book
+            var lend = _context.Lends
+                .Include(l => l.Book)
+                .FirstOrDefault(l => l.Id == lendId);
+
+            if (lend != null)
+            {
+                // Check if the lend has an associated Book
+                if (lend.Book != null)
+                {
+                    // Return the BookId
+                    return lend.Book.Id;
+                }
+            }
+
+            // Return null if the BookId is not found
+            return null;
+        }
+
+        public async Task<Lend> GetLendByIdAsync(int lendId)
+        {
+            return await _context.Lends
+                .Include(l => l.Items) // If you have a navigation property to LendItems
+                .FirstOrDefaultAsync(l => l.Id == lendId);
+        }
+
     }
 }

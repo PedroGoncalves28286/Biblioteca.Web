@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Biblioteca.Web.Data.Entities
@@ -20,5 +21,9 @@ namespace Biblioteca.Web.Data.Entities
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+        [Display(Name = "Registration Date")]
+        [DataType(DataType.Date)]
+        public DateTime RegistrationDate { get; set; }
     }
 }

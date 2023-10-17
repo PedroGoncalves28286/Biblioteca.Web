@@ -18,6 +18,10 @@ namespace Biblioteca.Web.Data.Entities
         [Display(Name = "Birth Date")]
         public DateTime BirthDate { get; set; }
 
+        public string Email { get; set; }
+
+        public int LibraryId { get; set; }
+
         public User User { get; set; }
     }
 }

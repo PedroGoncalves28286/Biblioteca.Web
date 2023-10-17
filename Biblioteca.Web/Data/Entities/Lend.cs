@@ -66,5 +66,6 @@ namespace Biblioteca.Web.Data.Entities
         public DateTime? ExtendedDevolutionDate { get; set; }
 
         public bool FirstExtensionDone { get; set; }
+
     }
 }
