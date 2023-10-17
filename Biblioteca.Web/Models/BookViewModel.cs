@@ -15,5 +15,9 @@ namespace Biblioteca.Web.Models
         [Display(Name = "Is Available")]
         public bool IsAvailable { get; set; }
 
+
+        public IFormFile BookPdf { get; set; }
+
+        public string BookPdfUrl { get; set; }
     }
 }

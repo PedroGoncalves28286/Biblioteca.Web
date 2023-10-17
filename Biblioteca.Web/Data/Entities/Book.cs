@@ -21,9 +21,6 @@ namespace Biblioteca.Web.Data.Entities
 
         public string GenreName { get; set; }
 
-        [Display(Name = "Book Id")]
-        public int BookId { get; set; }
-
         [Display(Name = "Selected Date")]
         public DateTime? SelectedDate { get; set; }
 
@@ -33,6 +30,8 @@ namespace Biblioteca.Web.Data.Entities
         public string ISBN { get; set; }
 
         public string Publisher { get; set; }
+
+        public string BookPdfUrl { get; set; }
 
         public bool IsAvailable { get; set; }
 

@@ -138,10 +138,10 @@ namespace Biblioteca.Web.Data
             if (!_context.Books.Any())
             {
                 // Add a default rental when the "Rentals" collection is empty.
-                AddBook("1000", "Kafka", "Metamorfose", "Fiction", 1, true, "9798719003521", "bertrand", user);
-                AddBook("1001", "Proust", "Em Busca do Tempo Perdido", "Adventure", 2, false, "9798724003522", "bertrand", user);
-                AddBook("1002", "VHugo", "Os Miseráveis ", "Novel", 3, true, "9798719033523", "bertrand", user);
-                AddBook("1003", "VNabokov", "Lolita", "Romance", 4, true, "9798259003524", "bertrand", user);
+                AddBook("1000", "Kafka", "Metamorfose", "Fiction", true, "9798719003521", "bertrand", user);
+                AddBook("1001", "Proust", "Em Busca do Tempo Perdido", "Adventure", false, "9798724003522", "bertrand", user);
+                AddBook("1002", "VHugo", "Os Miseráveis ", "Novel", true, "9798719033523", "bertrand", user);
+                AddBook("1003", "VNabokov", "Lolita", "Romance", true, "9798259003524", "bertrand", user);
                 await _context.SaveChangesAsync();
             }
 
@@ -188,7 +188,7 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddBook(string borrower, string author, string title, string genreName, int bookId, bool isAvailable,
+        private void AddBook(string borrower, string author, string title, string genreName, bool isAvailable,
             string isbn, string publisher, User user)
         {
             var genre = _context.Genres.FirstOrDefault(g => g.Name == genreName);
@@ -199,7 +199,6 @@ namespace Biblioteca.Web.Data
                 Author = author,
                 Title = title,
                 GenreName = genre.Name,
-                BookId = bookId,
                 //IsAvailable = isAvailable,
                 ISBN = isbn,
                 Publisher = publisher,

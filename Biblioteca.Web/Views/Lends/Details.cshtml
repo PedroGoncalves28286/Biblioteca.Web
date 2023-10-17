@@ -2,39 +2,48 @@
 @{
     ViewData["Title"] = "Details";
 }
-<div class="row">
-    <div class="col-md-8">
-        <dl class="row">
-            <dt class="col-sm-2">
-                Lend Id
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Id)
-            </dd>
 
-            <dt class="col-sm-2">
-                Username
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.User.UserName)
-            </dd>
+<form>
 
-            <dt class="col-sm-2">
-                Books
-            </dt>
-            <dd class="col-sm-10">
-                <ul>
-                    @foreach (var item in Model.Items)
-                    {
-                        <li>
-                            @Html.DisplayFor(modelItem => item.Book.Title)
-                        </li>
-                    }
-                </ul>
-            </dd>
-        </dl>
-     </div>
+    <div class="row">
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Lend Id
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Id)
+                </dd>
+
+                <dt class="col-sm-2">
+                    Username
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.User.UserName)
+                </dd>
+
+                <dt class="col-sm-2">
+                    Books
+                </dt>
+                <dd class="col-sm-10">
+                    <ul>
+                        @foreach (var item in Model.Items)
+                        {
+                            <li>
+                                @Html.DisplayFor(modelItem => item.Book.Title)
+                            
+                            
+                                <a asp-action="Details" asp-controller="Books" asp-route-id="@item.Book.Id" class="btn btn-primary">
+                                    View Book
+                                </a>
+                            </li>
+                            
+                        }
+                    </ul>
+                </dd>
+            </dl>
+         </div>
 
 
-</div>
-
+    </div>
+</form>

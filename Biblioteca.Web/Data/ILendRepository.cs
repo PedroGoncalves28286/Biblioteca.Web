@@ -28,5 +28,9 @@ namespace Biblioteca.Web.Data
 
         Lend GetById(int id);
 
+        Task<bool> UserHasLentBookAsync(string userName, int bookId);
+
+        Task<Lend> GetLendByIdAsync(int lendId);
     }
+
 }
