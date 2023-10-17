@@ -259,7 +259,7 @@ namespace Biblioteca.Web.Controllers
             var genres = _genreRepository.GetAll().ToList();
             ViewBag.Genres = new SelectList(genres, "Name", "Name");
 
-            return View(book);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Books/Delete/5

@@ -17,6 +17,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Title { get; set; }
 
+        [Display(Name = "Genre")]
         public string GenreName { get; set; }
 
         [Display(Name = "Book Id")]
@@ -32,6 +33,7 @@ namespace Biblioteca.Web.Data.Entities
 
         public string Publisher { get; set; }
 
+        [Display(Name = "Is Available")]
         public bool IsAvailable { get; set; }
 
         public User User { get; set; }
@@ -41,7 +43,8 @@ namespace Biblioteca.Web.Data.Entities
 
         [Required]
         //[MaxLength(20)]
-       
+
+        [Display(Name = "Loan Limit")]
         public int LoanLimitQuantity { get;set; }
 
         public IEnumerable <ValidationResult> Validate(ValidationContext validationContext)

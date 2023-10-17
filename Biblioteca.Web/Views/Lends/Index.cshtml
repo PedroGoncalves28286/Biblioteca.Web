@@ -10,10 +10,6 @@
         @TempData["EmailConfirmationMessage"]
     </div>
 }
-
-<h1>Lends</h1>
-
-
 <p>
     <a asp-action="Create" class="btn btn-primary">Create</a>
     @foreach (var item in Model)
@@ -75,8 +71,8 @@
                     </form>
                 </td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary"> <i class="fa-solid fa-trash-can fa-lg"></i> Delete</a> @*DELETE BUTTON*@
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"> <i class="fa-solid fa-info fa-lg"></i> Details</a> @*DETAILS BUTTON*@
                 </td>
             </tr>
         }

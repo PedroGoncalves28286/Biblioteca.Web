@@ -4,10 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Reservations</h1>
-
 <p>
-    <a asp-action="Create" class="btn"> <i class="fa-solid fa-plus fa-fade fa-2xl" style="color: #9A8174;"></i> Add Reservation</a>
+    <a asp-action="Create" class="btn btn-primary"> Add Reservation</a>
 </p>
 <table class="table">
     <thead>
@@ -19,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.Borrower)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReservationNumber)
+                Reservation Number
             </th>
             <th></th>
         </tr>
@@ -37,9 +35,9 @@
                 @Html.DisplayFor(modelItem => item.ReservationNumber)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a> @*EDIT BUTTON*@
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i>Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"> Edit</a> @*EDIT BUTTON*@
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary"> Delete</a> @*DELETE BUTTON*@
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"> Details</a> @*DETAILS BUTTON*@
             </td>
         </tr>
 }

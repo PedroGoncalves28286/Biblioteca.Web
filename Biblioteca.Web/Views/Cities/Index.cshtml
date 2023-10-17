@@ -3,8 +3,6 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Cities</h2>
-
 @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
 {
     <div class="alert alert-success" id="successMessageContainer">
@@ -14,7 +12,7 @@
 
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create</a>
+    <a asp-action="Create" class="btn btn-primary">Add City</a>
 </p>
 <table class="table">
     <thead>
@@ -39,14 +37,14 @@
                     @Html.DisplayFor(modelItem => item.LibrariesNumber)
                 </td>
                 <td id="@item.Id">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn">
-                        <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                        <i class="fa-solid fa-pen-to-square fa-lg"></i> Edit</a>
 
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn">
-                        <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">
+                        <i class="fa-solid fa-info fa-lg"></i> Details</a>
 
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn" id="btnDelete">
-                        <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary" id="btnDelete">
+                        <i class="fa-solid fa-trash-can fa-lg"></i> Delete</a>
                 </td>
             </tr>
         }
@@ -66,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <!-- Place the "No" button on the left -->
-                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+                <button type="button" class="btn btn-primary" id="btnNoDelete">No</button>
                 <!-- Place the "Delete" button on the right -->
                 <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
             </div>

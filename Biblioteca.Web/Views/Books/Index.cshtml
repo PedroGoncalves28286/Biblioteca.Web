@@ -4,12 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Books</h1>
-
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div class="alert alert-success" id="successMessageContainer">
+        @ViewBag.SuccessMessage
+    </div>
+}
 @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff") || this.User.IsInRole("Reader")))
 {
     <p>
-        <a asp-action="Create" class="btn"> <i class="fa-solid fa-plus fa-fade fa-2xl" style="color: #9A8174;"></i> Add Book</a>
+        <a asp-action="Create" class="btn btn-primary"> Add Book</a>
     </p>
 }
 <table class="table" id="books">
@@ -30,9 +34,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.BookId)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.CoverId)
-            </th>
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.ISBN)
             </th>
@@ -67,9 +71,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.BookId)
                 </td>
-                <td>
+               @*  <td>
                     <img src="@Url.Content(item.ImageFullPath)" alt="Image" style="width:100px; height:150px;max-width:100% ; height:auto">
-                </td>
+                </td> *@
                 <td>
                     @Html.DisplayFor(modelItem => item.ISBN)
                 </td>
@@ -85,12 +89,12 @@
                 <td>
                     @if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff")))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a> @*EDIT BUTTON*@
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"> Edit</a> @*EDIT BUTTON*@
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"> Details</a> @*DETAILS BUTTON*@
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary"> Delete</a>
                     }
                 </td>
             </tr>

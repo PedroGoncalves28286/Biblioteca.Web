@@ -4,20 +4,17 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Authors</h1>
-
 
     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
         {
         <p>
-        <a asp-action="Create" class="btn"> <i class="fa-solid fa-plus fa-fade fa-2xl" style="color: #9A8174;"></i> Add Author</a>
+        <a asp-action="Create" class="btn btn-primary"> Add Author</a>
         </p>
         }
 
 <table class="table">
     <thead>
         <tr>
-
             <th>
                 @Html.DisplayNameFor(model => model.AuthorImageId)
             </th>
@@ -49,10 +46,10 @@
                 <td>
                     @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a> @*EDIT BUTTON*@
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"> Edit</a> @*EDIT BUTTON*@
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary"> Delete</a> @*DELETE BUTTON*@
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i>Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"> Details</a> @*DETAILS BUTTON*@
                     
             </td>
                 

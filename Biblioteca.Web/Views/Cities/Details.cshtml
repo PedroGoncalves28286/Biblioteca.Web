@@ -2,11 +2,7 @@
 @{
     ViewData["Title"] = "Details";
 }
-
-<h2>Details</h2>
-
 <div>
-    <h4>City</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -18,14 +14,14 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn">
-        <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+        <i class="fa-solid fa-pen-to-square fa-lg"></i> Edit</a>
 
-    <a asp-action="AddLibrary" asp-route-id="@Model.Id" class="btn">
-        <i class="fa-solid fa-plus fa-fade fa-1xl" style="color: #9A8174;"></i> Add Library
+    <a asp-action="AddLibrary" asp-route-id="@Model.Id" class="btn btn-primary">
+        <i class="fa-solid fa-plus fa-fade fa-1xl"></i> Add Library
     </a>
 
-    <a asp-action="Index" class="btn"><i class="fa fa-chevron-left"></i> Back to List</a>
+    <a asp-action="Index" class="btn btn-primary"><i class="fa fa-chevron-left"></i> Back to List</a>
 </div>
 
 @if (Model.Libraries == null || Model.Libraries.Count == 0)
@@ -51,11 +47,11 @@ else
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td id="@item.Id">
-                        <a asp-action="EditLibrary" asp-route-id="@item.Id" class="btn">
-                            <i class="fa-solid fa-pen-to-square fa-lg" style="color: #9A8174;"></i> Edit</a>
+                        <a asp-action="EditLibrary" asp-route-id="@item.Id" class="btn btn-primary">
+                            <i class="fa-solid fa-pen-to-square fa-lg"></i> Edit</a>
 
-                        <a asp-action="DeleteLibrary" asp-route-id="@item.Id" class="btn" id="btnDelete">
-                            <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a>
+                        <a asp-action="DeleteLibrary" asp-route-id="@item.Id" class="btn btn-primary" id="btnDelete">
+                            <i class="fa-solid fa-trash-can fa-lg"></i> Delete</a>
                     </td>
                 </tr>
             }
