@@ -97,5 +97,21 @@ namespace Biblioteca.Web.Data
                 }).FirstOrDefaultAsync();
         }
 
+        public async Task DeleteBookAsync(int bookId)
+        {
+            // Find the book by its ID and remove it from the database
+            var book = await _context.Books.FindAsync(bookId);
+            if (book != null)
+            {
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<Book> GetBookByTitleAsync(string title)
+        {
+            return await _context.Books.FirstOrDefaultAsync(b => b.Title == title);
+        }
+
     }
 }

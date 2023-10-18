@@ -58,9 +58,9 @@ namespace Biblioteca.Web.Data.Entities
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (availableCopies < 1)
+            if (availableCopies < 0)
             {
-                yield return new ValidationResult("The book is currently unavailable.", new[] { nameof(AvailableCopies) });
+                yield return new ValidationResult("You must enter 0 or a positive value!", new[] { nameof(AvailableCopies) });
             }
         }
         public string ImageFullPath => CoverId == Guid.Empty

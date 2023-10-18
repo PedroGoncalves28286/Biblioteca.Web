@@ -68,24 +68,16 @@ namespace Biblioteca.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBook(AddItemViewModel model)
         {
-            // Check if the selected book is available
             var selectedBook = await _bookRepository.GetBookByIdAsync(model.BookId);
 
             if (ModelState.IsValid && selectedBook != null && selectedBook.IsAvailable)
             {
-                // Set the current date as the LendDate when adding the book
                 model.LendDate = DateTime.Now;
+                model.DevolutionDate = model.LendDate.AddDays(14);
 
-                // Calculate DevolutionDate based on your logic
-                model.DevolutionDate = model.LendDate.AddDays(14); // 14 days after LendDate
-
-                // Check if there are available copies
                 if (selectedBook.AvailableCopies > 0)
                 {
-                    // Proceed with the lend
                     await _lendRepository.AddItemToLendAsync(model, this.User.Identity.Name);
-
-                    // Decrease available copies by one
                     selectedBook.AvailableCopies--;
 
                     // Update IsAvailable property
@@ -93,25 +85,48 @@ namespace Biblioteca.Web.Controllers
                 }
                 else
                 {
-                    // Handle the case where there are no available copies
                     ModelState.AddModelError(string.Empty, "No available copies of the selected book.");
                 }
 
-                // Update the book in the repository
                 await _bookRepository.UpdateBookAsync(selectedBook);
 
                 return RedirectToAction("Create");
             }
 
-            // If the model state is not valid or the book is not available, return to the view.
             model.Books = _bookRepository.GetComboBooks();
 
-            // The client-side code will handle displaying the error message.
+            if (selectedBook != null)
+            {
+                // Check if the book is overdue (DevolutionDate is in the past)
+                if (model.DevolutionDate <= DateTime.Now)
+                {
+                    // Increase available copies
+                    selectedBook.AvailableCopies++;
+
+                    // Update IsAvailable property
+                    selectedBook.IsAvailable = true;
+
+                    // Perform book deletion logic here
+                    // Remove the book from the repository or mark it as deleted
+                    await _bookRepository.DeleteBookAsync(selectedBook.Id);
+                }
+                else
+                {
+                    // Increase available copies
+                    selectedBook.AvailableCopies++;
+
+                    // Update IsAvailable property
+                    selectedBook.IsAvailable = true;
+
+                    await _bookRepository.UpdateBookAsync(selectedBook);
+                }
+            }
+
             return View(model);
         }
 
 
-
+       
         public async Task<IActionResult> DeleteItem(int? id)
         {
             if (id == null)
@@ -229,11 +244,31 @@ namespace Biblioteca.Web.Controllers
                 return NotFound();
             }
 
+            // Ensure there is at least one item in the LendDetail collection
+            var lendDetail = lendToDelete.Items.FirstOrDefault();
+
+            if (lendDetail == null)
+            {
+                return NotFound(); // Handle the case where the LendDetail is not found
+            }
+
+            // Get the associated book from the LendDetail
+            var book = lendDetail.Book;
+
+            if (book != null)
+            {
+                // Increase available copies
+                book.AvailableCopies++;
+                await _bookRepository.UpdateAsync(book);
+            }
+
             // Perform the deletion logic here
             await _lendRepository.DeleteAsync(lendToDelete);
 
             return RedirectToAction("Index"); // Redirect to the list of lends after deletion
         }
+
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -388,5 +423,7 @@ namespace Biblioteca.Web.Controllers
             // Return the document as a downloadable file
             return File(documentBytes, "text/html", fileName);
         }
+
+
     }
 }

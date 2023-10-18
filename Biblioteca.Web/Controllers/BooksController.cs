@@ -212,11 +212,19 @@ namespace Biblioteca.Web.Controllers
                     var existingBookWithSameBookId = await _bookRepository.GetBookByBookIdAsync(model.Id);
                     if (existingBookWithSameBookId != null && existingBookWithSameBookId.Id != model.Id)
                     {
-                        ModelState.AddModelError("BookId", "A book with the same Id already exists.");
+                        ModelState.AddModelError("Id", "A book with the same Id already exists.");
                         // Repopulate the genre dropdown if needed
                         var genres = _genreRepository.GetAll().ToList();
                         ViewBag.Genres = new SelectList(genres, "Name", "Name");
                         return View(model);
+                    }
+
+                    // Check if a new PDF is provided for the book update
+                    if (model.BookPdf != null)
+                    {
+                        string folder = "books/pdf";
+                        string pdfUrl = await UploadFile(folder, model.BookPdf); // Get the URL of the uploaded PDF
+                        book.BookPdfUrl = pdfUrl;
                     }
 
                     // Update genre name based on the user's selection
@@ -339,5 +347,6 @@ namespace Biblioteca.Web.Controllers
             // Redirect the user to the book details page with the lend's book ID
             return RedirectToAction("Details", "Books", new { id = lend.Book.Id });
         }
+
     }
 }
