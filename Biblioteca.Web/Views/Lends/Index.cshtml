@@ -46,8 +46,7 @@
                 {
                     <td>
                         @Html.DisplayFor(modelItem => lendItem.User.FullName)<br /><br />
-                        <a href="@Url.Action("DownloadConfirmationDocument", "Lends", new { lendId = lendItem.Id })" class="btn btn-primary">
-                            <i class="fa-solid fa-download" style="color: #9A8174;"></i> Confirmation</a>
+                        <a href="@Url.Action("DownloadConfirmationDocument", "Lends", new { lendId = lendItem.Id })" class="btn btn-primary">Confirmation</a>
                     </td>
                 }
                 <td>
@@ -64,12 +63,12 @@
                             <input type="number" id="extensionDays" name="extensionDays" value="1" min="1" max="14" required style="text-align: center;" />
 
                         </div>
-                        <button type="button" class="btn btn-success extend-button">Extend</button>
+                        <button type="button" class="btn btn-primary extend-button">Extend</button>
                     </form>
                 </td>
                 <td>
-                    <a asp-action="Delete" asp-route-id="@lendItem.Id" class="btn"> <i class="fa-solid fa-trash-can fa-lg" style="color: #9A8174;"></i> Delete</a> @*DELETE BUTTON*@
-                    <a asp-action="Details" asp-route-id="@lendItem.Id" class="btn"> <i class="fa-solid fa-info fa-lg" style="color: #9A8174;"></i> Details</a> @*DETAILS BUTTON*@
+                    <a asp-action="Delete" asp-route-id="@lendItem.Id" class="btn btn-danger">Delete</a> @*DELETE BUTTON*@
+                    <a asp-action="Details" asp-route-id="@lendItem.Id" class="btn btn-primary">View Order</a> @*DETAILS BUTTON*@
                     
                 </td>
             </tr>

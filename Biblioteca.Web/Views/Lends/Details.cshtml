@@ -30,14 +30,9 @@
                         @foreach (var item in Model.Items)
                         {
                             <li>
-                                @Html.DisplayFor(modelItem => item.Book.Title)
-                            
-                            
-                                <a asp-action="Details" asp-controller="Books" asp-route-id="@item.Book.Id" class="btn btn-primary">
-                                    View Book
-                                </a>
+                                @Html.DisplayFor(modelItem => item.Book.Title) - 
+                                <a asp-action="Details" asp-controller="Books" asp-route-id="@item.Book.Id" style="text-decoration: underline; color: blue;">View Book</a>
                             </li>
-                            
                         }
                     </ul>
                 </dd>
