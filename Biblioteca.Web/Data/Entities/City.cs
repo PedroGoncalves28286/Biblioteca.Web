@@ -16,5 +16,6 @@ namespace Biblioteca.Web.Data.Entities
 
         [Display(Name = "Number of libraries")]
         public int LibrariesNumber => Libraries == null ? 0 : Libraries.Count;
+
     }
 }

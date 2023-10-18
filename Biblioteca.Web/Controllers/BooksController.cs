@@ -299,8 +299,10 @@ namespace Biblioteca.Web.Controllers
             var genres = _genreRepository.GetAll().ToList();
             ViewBag.Genres = new SelectList(genres, "Name", "Name");
 
-            return RedirectToAction(nameof(Index));
+            // Return the "Delete" view here, passing the book object for confirmation
+            return View(book);
         }
+
 
         // POST: Books/Delete/5
         [RoleAuthorization("Admin")]
