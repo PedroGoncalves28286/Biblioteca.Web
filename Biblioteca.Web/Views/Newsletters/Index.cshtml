@@ -4,55 +4,63 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>Newsletters</h4>
-
 @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                     {
         <a asp-action="Create" class="btn btn-primary"> Create New</a>
+        <p> </p>
                     }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NewsID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AddDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewsID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Content)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AddDate)
-            </td>
-            <td>
-                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h2>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Content)</p>
+                    <p class="card-text">Added date: @Html.DisplayFor(modelItem => item.AddDate)</p>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"> Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary"> Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary"> Details</a>
-                    
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        background-color: #f7f7f7;
+    }
+
+    .card-title {
+        color: #007bff;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 16px;
+        line-height: 1.5;
+        color: #666;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+        .btn-danger:hover {
+            background-color: #ac2925;
+        }
+</style>

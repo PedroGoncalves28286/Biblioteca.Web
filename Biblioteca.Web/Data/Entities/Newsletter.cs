@@ -6,7 +6,6 @@ namespace Biblioteca.Web.Data.Entities
     public class Newsletter : IEntity
     {
         public int Id { get; set; }
-        public int NewsID { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

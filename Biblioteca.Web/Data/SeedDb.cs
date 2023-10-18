@@ -126,11 +126,11 @@ namespace Biblioteca.Web.Data
             
             if (!_context.Newsletters.Any())
             {
-                AddNewsletter(1, "Divine Comedy", "The Divine Comedy is an epic poem by Dante Alighieri in the early 14th century. It consists of three parts: Inferno, Purgatorio, and Paradiso. The poem follows Dante's journey through the afterlife, guided first by the poet Virgil and later by his beloved Beatrice.", DateTime.Now,user);
-                AddNewsletter(1, "The Metamorphosis ", "The Metamorphosis is a novella by Franz Kafka about a man who inexplicably transforms into a giant insect. Traveling salesman Gregor Samsa wakes up one morning to discover that he has transformed into a giant insect. His metamorphosis makes it impossible for him to work. When Gregor finally opens the door, his hideous figure frightens his family.", DateTime.Now,user);
-                AddNewsletter(1, "One Hundred Years of Solitude", "One Hundred Years of Solitude is a magical realist novel from the author Gabriel García Márquez that tells the multi-generational story of the Buendía family in the fictional town of Macondo. It explores themes of love, power, and the cyclical nature of history. The novel is known for its blending of reality and fantasy, with characters facing surreal events and a recurring curse of solitude and repetition. It's a rich tapestry of characters and events spanning a century, creating a unique and mesmerizing narrative.", DateTime.Now,user);
-                AddNewsletter(1, "War and Peace", " War and Peace is a novel by Leo Tolstoy that explores the lives of several Russian aristocratic families during the Napoleonic Wars. It delves into themes of love, war, and human nature while providing a detailed account of the historical events. The novel is known for its rich characters and philosophical reflections on history and free will. It remains a classic that offers a comprehensive view of society and history while exploring the complexities of human existence.", DateTime.Now,user);
-                AddNewsletter(1, "Romeu ad Juliet", " Romeo and Juliet is a classic Shakespearean tragedy about two young lovers, Romeo and Juliet, from feuding families in Verona. They fall in love but are separated by a series of unfortunate events and misunderstandings. Believing each other to be dead, they both tragically take their own lives. Their deaths lead to the reconciliation of their families. The play explores themes of love, fate, and the destructive impact of family conflicts.", DateTime.Now,user);
+                AddNewsletter("Divine Comedy", "The Divine Comedy is an epic poem by Dante Alighieri in the early 14th century. It consists of three parts: Inferno, Purgatorio, and Paradiso. The poem follows Dante's journey through the afterlife, guided first by the poet Virgil and later by his beloved Beatrice.", DateTime.Now,user);
+                AddNewsletter("The Metamorphosis ", "The Metamorphosis is a novella by Franz Kafka about a man who inexplicably transforms into a giant insect. Traveling salesman Gregor Samsa wakes up one morning to discover that he has transformed into a giant insect. His metamorphosis makes it impossible for him to work. When Gregor finally opens the door, his hideous figure frightens his family.", DateTime.Now,user);
+                AddNewsletter("One Hundred Years of Solitude", "One Hundred Years of Solitude is a magical realist novel from the author Gabriel García Márquez that tells the multi-generational story of the Buendía family in the fictional town of Macondo. It explores themes of love, power, and the cyclical nature of history. The novel is known for its blending of reality and fantasy, with characters facing surreal events and a recurring curse of solitude and repetition. It's a rich tapestry of characters and events spanning a century, creating a unique and mesmerizing narrative.", DateTime.Now,user);
+                AddNewsletter("War and Peace", " War and Peace is a novel by Leo Tolstoy that explores the lives of several Russian aristocratic families during the Napoleonic Wars. It delves into themes of love, war, and human nature while providing a detailed account of the historical events. The novel is known for its rich characters and philosophical reflections on history and free will. It remains a classic that offers a comprehensive view of society and history while exploring the complexities of human existence.", DateTime.Now,user);
+                AddNewsletter("Romeu ad Juliet", " Romeo and Juliet is a classic Shakespearean tragedy about two young lovers, Romeo and Juliet, from feuding families in Verona. They fall in love but are separated by a series of unfortunate events and misunderstandings. Believing each other to be dead, they both tragically take their own lives. Their deaths lead to the reconciliation of their families. The play explores themes of love, fate, and the destructive impact of family conflicts.", DateTime.Now,user);
 
                 await _context.SaveChangesAsync();
             }
@@ -138,10 +138,10 @@ namespace Biblioteca.Web.Data
             if (!_context.Books.Any())
             {
                 // Add a default rental when the "Rentals" collection is empty.
-                AddBook("1000", "Kafka", "Metamorfose", "Fiction", true, "9798719003521", "bertrand", user);
+                AddBook("1000", "Kafka", "Metamorfose", "Fiction", false, "9798719003521", "bertrand", user);
                 AddBook("1001", "Proust", "Em Busca do Tempo Perdido", "Adventure", false, "9798724003522", "bertrand", user);
-                AddBook("1002", "VHugo", "Os Miseráveis ", "Novel", true, "9798719033523", "bertrand", user);
-                AddBook("1003", "VNabokov", "Lolita", "Romance", true, "9798259003524", "bertrand", user);
+                AddBook("1002", "VHugo", "Os Miseráveis ", "Novel", false, "9798719033523", "bertrand", user);
+                AddBook("1003", "VNabokov", "Lolita", "Romance", false, "9798259003524", "bertrand", user);
                 await _context.SaveChangesAsync();
             }
 
@@ -199,7 +199,7 @@ namespace Biblioteca.Web.Data
                 Author = author,
                 Title = title,
                 GenreName = genre.Name,
-                //IsAvailable = isAvailable,
+                IsAvailable = isAvailable,
                 ISBN = isbn,
                 Publisher = publisher,
                 User = user,
@@ -207,11 +207,10 @@ namespace Biblioteca.Web.Data
             });
         }
 
-        private void AddNewsletter(int newsId,string title,string content,DateTime date, User user)
+        private void AddNewsletter(string title,string content,DateTime date, User user)
         {
             _context.Newsletters.Add(new Newsletter
             {
-                NewsID = newsId,
                 Title = title,
                 Content = content,
                 AddDate = date,
