@@ -16,11 +16,11 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
 
-    <a asp-action="AddLibrary" asp-route-id="@Model.Id" class="btn btn-success">Add Library</a>
+    <a asp-action="AddLibrary" asp-route-id="@Model.Id" class="btn btn-primary">Add Library</a>
 
-    @*<a asp-action="Index" class="btn btn-primary">Back to List</a>*@
+    <a asp-action="Index" class="btn btn-primary">Back to List</a>
 </div>
-
+<p> </p>
 @if (Model.Libraries == null || Model.Libraries.Count == 0)
 {
     <h5>No libraries added yet</h5>

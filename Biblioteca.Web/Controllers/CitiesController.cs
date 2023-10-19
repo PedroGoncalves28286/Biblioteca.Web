@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System;
 using Biblioteca.Web.Models;
+using Microsoft.WindowsAzure.Storage;
 
 namespace Biblioteca.Web.Controllers
 {
@@ -186,11 +187,12 @@ namespace Biblioteca.Web.Controllers
             {
                 return NotFound();
             }
-
-            var city = await _cityRepository.GetByIdAsync(id.Value);
-            if (city == null)
+            var city = await _cityRepository.GetCityWithLibrariesAsync(id.Value);
+            if (city.Libraries.Count > 0) // To avoid cascade delete
             {
-                return NotFound();
+                this.ViewBag.ErrorTitle = "Error";
+                this.ViewBag.ErrorMessage = "In order to delete this city, you must first delete the libraries within it.";
+                return RedirectToAction("Error", "Errors");
             }
 
             await _cityRepository.DeleteAsync(city);

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-@if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff") || this.User.IsInRole("Reader")))
+@if (this.User.Identity.IsAuthenticated && (this.User.IsInRole("Admin") || this.User.IsInRole("Staff")))
 {
     <p>
         <a asp-action="Create" class="btn btn-primary">Add Book</a>
@@ -14,7 +14,7 @@
 @using(Html.BeginForm("Index", "Books", FormMethod.Get))
 {
     <div class="input-group">
-        @Html.TextBox("search", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Search by title, author, genre, ISBN, publisher, or book ID" })
+        @Html.TextBox("search", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Search by title, author, genre, ISBN or publisher" })
         <div class="input-group-append">
             <input type="submit" value="Search" class="btn btn-primary" />
         </div>
