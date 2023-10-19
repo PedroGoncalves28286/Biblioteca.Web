@@ -89,7 +89,7 @@ namespace Biblioteca.Web.Controllers
             {
                 if (model.BookPdf != null)
                 {
-                    string folder = "books/pdf";
+                    string folder = "books";
                     string pdfUrl = await UploadFile(folder, model.BookPdf); // Get the URL of the uploaded PDF
 
                     Guid coverId = Guid.Empty;
@@ -132,14 +132,15 @@ namespace Biblioteca.Web.Controllers
 
         private async Task<string> UploadFile(string folderPath, IFormFile file)
         {
-            folderPath += Guid.NewGuid().ToString() + "_" + file.FileName;
+            folderPath = "books/" + Guid.NewGuid().ToString() + "_" + file.FileName; // Change this line
 
-            string serverFolder =  Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
+            string serverFolder = Path.Combine(_webHostEnvironment.WebRootPath, folderPath);
 
             await file.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
 
             return "/" + folderPath;
         }
+
 
 
         // GET: Books/Edit/5
@@ -222,7 +223,7 @@ namespace Biblioteca.Web.Controllers
                     // Check if a new PDF is provided for the book update
                     if (model.BookPdf != null)
                     {
-                        string folder = "books/pdf";
+                        string folder = "books";
                         string pdfUrl = await UploadFile(folder, model.BookPdf); // Get the URL of the uploaded PDF
                         book.BookPdfUrl = pdfUrl;
                     }

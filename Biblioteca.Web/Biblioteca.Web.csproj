@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\books\pdf\" />
+    <Folder Include="wwwroot\books\" />
     <Folder Include="wwwroot\images\covers\" />
   </ItemGroup>
 
