@@ -18,6 +18,10 @@ namespace Biblioteca.Web.Controllers
             return View();
         }
 
+        public IActionResult CascadeError()
+        {
+            return View();
+        }
 
     }
 }

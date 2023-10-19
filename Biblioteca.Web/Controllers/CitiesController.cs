@@ -190,9 +190,9 @@ namespace Biblioteca.Web.Controllers
             var city = await _cityRepository.GetCityWithLibrariesAsync(id.Value);
             if (city.Libraries.Count > 0) // To avoid cascade delete
             {
-                this.ViewBag.ErrorTitle = "Error";
-                this.ViewBag.ErrorMessage = "In order to delete this city, you must first delete the libraries within it.";
-                return RedirectToAction("Error", "Errors");
+                //this.ViewBag.ErrorTitle = "Error";
+                //this.ViewBag.ErrorMessage = "In order to delete this city, you must first delete the libraries within it.";
+                return RedirectToAction("CascadeError", "Errors");
             }
 
             await _cityRepository.DeleteAsync(city);
